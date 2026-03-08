@@ -115,9 +115,9 @@ export default function GlobalCalendar() {
   return (
     <div className="pb-safe">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-card/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-border/40 bg-card/80 backdrop-blur-2xl">
         <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-bold font-display">Discover</h1>
+          <h1 className="text-lg font-extrabold font-display">Discover</h1>
           <div className="flex items-center gap-1">
             <button
               onClick={() => { setView("calendar"); setSelectedDate(null); }}
@@ -283,11 +283,11 @@ export default function GlobalCalendar() {
                   <button
                     key={day.toISOString()}
                     onClick={() => setSelectedDate(selected ? null : day)}
-                    className={`relative flex flex-col items-center rounded-lg py-1.5 text-sm transition-colors ${
+                    className={`relative flex flex-col items-center rounded-xl py-1.5 text-sm font-bold transition-all duration-300 ${
                       selected
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground shadow-glow"
                         : today
-                        ? "bg-secondary font-semibold"
+                        ? "bg-primary/10 text-primary font-extrabold"
                         : "hover:bg-secondary"
                     }`}
                   >
