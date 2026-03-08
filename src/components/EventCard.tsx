@@ -5,34 +5,35 @@ interface EventCardProps {
   id: string;
   title: string;
   description?: string | null;
-  event_type: "admin" | "club" | "student" | "private";
+  event_type: "mandatory" | "club" | "open_invite" | "private";
   location?: string | null;
   start_time: string;
   end_time: string;
   is_mandatory?: boolean;
   club_name?: string | null;
+  category?: string | null;
   isSaved?: boolean;
   onToggleSave?: (id: string) => void;
 }
 
 const typeStyles: Record<string, string> = {
-  admin: "bg-event-admin/10 text-event-admin border-event-admin/20",
+  mandatory: "bg-event-admin/10 text-event-admin border-event-admin/20",
   club: "bg-event-club/10 text-event-club border-event-club/20",
-  student: "bg-event-student/10 text-event-student border-event-student/20",
+  open_invite: "bg-event-student/10 text-event-student border-event-student/20",
   private: "bg-event-private/10 text-event-private border-event-private/20",
 };
 
 const dotStyles: Record<string, string> = {
-  admin: "bg-event-admin",
+  mandatory: "bg-event-admin",
   club: "bg-event-club",
-  student: "bg-event-student",
+  open_invite: "bg-event-student",
   private: "bg-event-private",
 };
 
 const typeLabels: Record<string, string> = {
-  admin: "Admin",
+  mandatory: "Mandatory",
   club: "Club",
-  student: "Student",
+  open_invite: "Open Invite",
   private: "Private",
 };
 
@@ -43,9 +44,9 @@ export default function EventCard({
   event_type,
   location,
   start_time,
-  end_time,
   is_mandatory,
   club_name,
+  category,
   isSaved,
   onToggleSave,
 }: EventCardProps) {
@@ -58,13 +59,16 @@ export default function EventCard({
               <span className={`h-1.5 w-1.5 rounded-full ${dotStyles[event_type]}`} />
               {typeLabels[event_type]}
             </span>
-            {is_mandatory && (
+            {is_mandatory && event_type !== "mandatory" && (
               <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">
                 Mandatory
               </span>
             )}
             {club_name && (
               <span className="text-xs text-muted-foreground">{club_name}</span>
+            )}
+            {category && category !== "other" && (
+              <span className="text-xs text-muted-foreground capitalize">{category}</span>
             )}
           </div>
           <h3 className="font-semibold leading-tight text-card-foreground">{title}</h3>

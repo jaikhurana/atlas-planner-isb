@@ -23,14 +23,12 @@ export function usePersonalEvents() {
     queryKey: ["events", "personal", user?.id],
     enabled: !!user,
     queryFn: async () => {
-      // Get saved event IDs
-      const { data: saved } = await supabase
-        .from("saved_events")
+      const { data: attendees } = await supabase
+        .from("event_attendees")
         .select("event_id")
         .eq("user_id", user!.id);
-      const savedIds = saved?.map((s) => s.event_id) ?? [];
+      const savedIds = attendees?.map((a) => a.event_id) ?? [];
 
-      // Get mandatory events + saved events + private events by user
       const { data, error } = await supabase
         .from("events")
         .select("*")
@@ -47,15 +45,15 @@ export function usePersonalEvents() {
 export function useSavedEventIds() {
   const { user } = useAuth();
   return useQuery({
-    queryKey: ["saved_events", user?.id],
+    queryKey: ["event_attendees", user?.id],
     enabled: !!user,
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("saved_events")
+        .from("event_attendees")
         .select("event_id")
         .eq("user_id", user!.id);
       if (error) throw error;
-      return new Set(data.map((s) => s.event_id));
+      return new Set(data.map((a) => a.event_id));
     },
   });
 }
@@ -67,13 +65,13 @@ export function useToggleSave() {
   return useMutation({
     mutationFn: async ({ eventId, saved }: { eventId: string; saved: boolean }) => {
       if (saved) {
-        await supabase.from("saved_events").delete().eq("user_id", user!.id).eq("event_id", eventId);
+        await supabase.from("event_attendees").delete().eq("user_id", user!.id).eq("event_id", eventId);
       } else {
-        await supabase.from("saved_events").insert({ user_id: user!.id, event_id: eventId });
+        await supabase.from("event_attendees").insert({ user_id: user!.id, event_id: eventId, status: "saved" });
       }
     },
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["saved_events"] });
+      qc.invalidateQueries({ queryKey: ["event_attendees"] });
       qc.invalidateQueries({ queryKey: ["events", "personal"] });
     },
   });
@@ -85,7 +83,7 @@ export function useCreateEvent() {
     mutationFn: async (event: {
       title: string;
       description?: string;
-      event_type: "admin" | "club" | "student" | "private";
+      event_type: "mandatory" | "club" | "open_invite" | "private";
       location?: string;
       start_time: string;
       end_time: string;
@@ -93,8 +91,12 @@ export function useCreateEvent() {
       is_open_invite?: boolean;
       club_name?: string;
       created_by: string;
+      category?: "academic" | "sports" | "cultural" | "social" | "other";
+      sub_tags?: string[];
+      max_cap?: number;
+      ignore_cap?: boolean;
     }) => {
-      const { error } = await supabase.from("events").insert(event);
+      const { error } = await supabase.from("events").insert([event]);
       if (error) throw error;
     },
     onSuccess: () => {
