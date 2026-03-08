@@ -61,6 +61,7 @@ function AppRoutes() {
         <Route path="/create" element={<CreateEvent />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/event/:id" element={<EventDetail />} />
+        <Route path="/auth" element={<Navigate to="/" replace />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />
