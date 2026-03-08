@@ -46,7 +46,7 @@ export default function GlobalCalendar() {
   const [filterEventType, setFilterEventType] = useState<string[]>([]);
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
-  const [filterMyInterests, setFilterMyInterests] = useState(false);
+  const [filterInterests, setFilterInterests] = useState<string[]>([]);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const myTags = useMemo(() => {
