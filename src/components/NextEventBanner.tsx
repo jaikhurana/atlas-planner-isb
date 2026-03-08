@@ -1,8 +1,10 @@
 import { format, formatDistanceToNowStrict } from "date-fns";
 import { MapPin, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface NextEventBannerProps {
+  id: string;
   title: string;
   start_time: string;
   end_time: string;
@@ -25,12 +27,14 @@ const accentMap: Record<string, string> = {
 };
 
 export default function NextEventBanner({
+  id,
   title,
   start_time,
   end_time,
   location,
   event_type,
 }: NextEventBannerProps) {
+  const navigate = useNavigate();
   const startsIn = formatDistanceToNowStrict(new Date(start_time), { addSuffix: true });
 
   return (
@@ -59,6 +63,7 @@ export default function NextEventBanner({
       <Button
         size="sm"
         className="mt-4 gap-1.5 rounded-2xl text-xs font-bold shadow-soft"
+        onClick={() => navigate(`/event/${id}`)}
       >
         View Details
         <ArrowRight className="h-3 w-3" />

@@ -69,6 +69,7 @@ export default function Index() {
           <div className="h-40 animate-pulse-soft rounded-3xl bg-secondary" />
         ) : nextEvent ? (
           <NextEventBanner
+            id={nextEvent.id}
             title={nextEvent.title}
             start_time={nextEvent.start_time}
             end_time={nextEvent.end_time}
