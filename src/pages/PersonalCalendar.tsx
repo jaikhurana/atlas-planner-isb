@@ -15,9 +15,11 @@ export default function PersonalCalendar() {
     toggleSave.mutate({ eventId: id, saved: savedIds?.has(id) ?? false });
   };
 
-  const mandatory = events?.filter((e) => e.is_mandatory) ?? [];
-  const saved = events?.filter((e) => !e.is_mandatory && e.event_type !== "private") ?? [];
-  const privateEvents = events?.filter((e) => e.event_type === "private") ?? [];
+  const now = new Date();
+  const upcoming = events?.filter((e) => new Date(e.end_time) >= now) ?? [];
+  const mandatory = upcoming.filter((e) => e.is_mandatory);
+  const saved = upcoming.filter((e) => !e.is_mandatory && e.event_type !== "private");
+  const privateEvents = upcoming.filter((e) => e.event_type === "private");
 
   return (
     <div className="pb-safe">
