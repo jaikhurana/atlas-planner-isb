@@ -91,6 +91,7 @@ export type Database = {
           is_open_invite: boolean
           location: string | null
           max_cap: number | null
+          requires_approval: boolean
           start_time: string
           sub_tags: string[] | null
           title: string
@@ -110,6 +111,7 @@ export type Database = {
           is_open_invite?: boolean
           location?: string | null
           max_cap?: number | null
+          requires_approval?: boolean
           start_time: string
           sub_tags?: string[] | null
           title: string
@@ -129,6 +131,7 @@ export type Database = {
           is_open_invite?: boolean
           location?: string | null
           max_cap?: number | null
+          requires_approval?: boolean
           start_time?: string
           sub_tags?: string[] | null
           title?: string
