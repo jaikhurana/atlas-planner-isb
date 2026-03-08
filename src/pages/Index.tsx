@@ -3,6 +3,7 @@ import { useGlobalEvents, usePersonalEvents, useSavedEventIds, useToggleSave } f
 import EventCard from "@/components/EventCard";
 import NextEventBanner from "@/components/NextEventBanner";
 import WeekStrip from "@/components/WeekStrip";
+import { NotificationBell } from "@/components/NotificationPanel";
 import { Globe } from "lucide-react";
 
 export default function Index() {
