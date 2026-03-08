@@ -84,6 +84,7 @@ export default function CreateEvent() {
   const isValid =
     title.trim().length >= 2 &&
     category &&
+    subTags.length >= 1 &&
     date &&
     startTime &&
     endTime &&
@@ -213,8 +214,11 @@ export default function CreateEvent() {
           <section className="space-y-3">
             <Label className="text-sm font-medium flex items-center gap-1.5">
               <Tag className="h-3.5 w-3.5" />
-              Tags
+              Tags <span className="text-destructive">*</span>
             </Label>
+            {subTags.length === 0 && (
+              <p className="text-xs text-destructive">At least one tag is required</p>
+            )}
 
             {/* Selected tags */}
             <div className="flex flex-wrap gap-1.5">
