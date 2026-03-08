@@ -2,7 +2,7 @@ import { usePersonalEvents, useSavedEventIds, useToggleSave } from "@/hooks/useE
 import EventCard from "@/components/EventCard";
 import EventCardSkeleton from "@/components/EventCardSkeleton";
 import EmptyState from "@/components/EmptyState";
-import { CalendarDays, Bookmark, Lock } from "lucide-react";
+import { CalendarDays } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function PersonalCalendar() {
@@ -21,8 +21,8 @@ export default function PersonalCalendar() {
 
   return (
     <div className="pb-safe">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-card/80 px-4 py-3 backdrop-blur-xl">
-        <h1 className="text-lg font-bold font-display">My Calendar</h1>
+      <header className="sticky top-0 z-40 border-b border-border/40 bg-card/80 px-4 py-3 backdrop-blur-2xl">
+        <h1 className="text-lg font-extrabold font-display">My Calendar</h1>
       </header>
 
       <main className="mx-auto max-w-lg space-y-6 px-4 py-5">
@@ -36,7 +36,7 @@ export default function PersonalCalendar() {
           <>
             {mandatory.length > 0 && (
               <section className="animate-fade-in">
-                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                   Mandatory
                 </h2>
                 <div className="space-y-3 stagger-children">
@@ -49,7 +49,7 @@ export default function PersonalCalendar() {
 
             {saved.length > 0 && (
               <section className="animate-fade-in">
-                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                   Saved Events
                 </h2>
                 <div className="space-y-3 stagger-children">
@@ -62,7 +62,7 @@ export default function PersonalCalendar() {
 
             {privateEvents.length > 0 && (
               <section className="animate-fade-in">
-                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+                <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
                   Private
                 </h2>
                 <div className="space-y-3 stagger-children">
@@ -77,7 +77,7 @@ export default function PersonalCalendar() {
               <EmptyState
                 icon={CalendarDays}
                 title="Your calendar is empty"
-                description="Save events from the global calendar or create private ones to see them here."
+                description="Save events from Discover or create your own private ones!"
                 action={{ label: "Browse Events", onClick: () => navigate("/global") }}
               />
             )}

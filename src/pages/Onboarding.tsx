@@ -23,16 +23,19 @@ const interestCategories = [
   {
     name: "Academic",
     icon: "📚",
+    color: "bg-warm-yellow/15 border-warm-yellow/25",
     tags: ["Consulting", "Finance", "Marketing", "Product", "Strategy", "Entrepreneurship"],
   },
   {
     name: "Sports",
     icon: "🏅",
+    color: "bg-warm-teal/15 border-warm-teal/25",
     tags: ["Football", "Cricket", "Badminton", "Running", "Gym"],
   },
   {
     name: "Cultural",
     icon: "🎨",
+    color: "bg-warm-lavender/15 border-warm-lavender/25",
     tags: ["Music", "Dance", "Movies", "Food", "Photography"],
   },
 ];
@@ -44,16 +47,11 @@ export default function Onboarding() {
   const [step, setStep] = useState(1);
   const [saving, setSaving] = useState(false);
 
-  // Step 1
   const [name, setName] = useState("");
   const [age, setAge] = useState("");
   const [gender, setGender] = useState("");
   const [workExp, setWorkExp] = useState("");
-
-  // Step 2
   const [activities, setActivities] = useState<string[]>([]);
-
-  // Step 3
   const [interests, setInterests] = useState<string[]>([]);
 
   const toggleItem = (arr: string[], item: string) =>
@@ -93,13 +91,19 @@ export default function Onboarding() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
+      {/* Decorative */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden">
+        <div className="absolute -top-32 -right-32 h-80 w-80 rounded-full bg-primary/6 blur-3xl" />
+        <div className="absolute bottom-20 -left-20 h-60 w-60 rounded-full bg-warm-yellow/8 blur-3xl" />
+      </div>
+
       {/* Progress bar */}
-      <div className="sticky top-0 z-40 bg-card/80 backdrop-blur-lg">
+      <div className="sticky top-0 z-40 bg-card/80 backdrop-blur-2xl">
         <div className="mx-auto flex max-w-lg items-center gap-2 px-4 py-4">
           {[1, 2, 3].map((s) => (
             <div key={s} className="flex-1">
-              <div className={`h-1.5 rounded-full transition-all duration-500 ${
-                s < step ? "bg-primary" : s === step ? "bg-primary" : "bg-border"
+              <div className={`h-2 rounded-full transition-all duration-500 ${
+                s <= step ? "bg-primary shadow-glow" : "bg-border"
               }`}>
                 <div
                   className="h-full rounded-full bg-primary transition-all duration-500"
@@ -111,35 +115,35 @@ export default function Onboarding() {
         </div>
       </div>
 
-      <div className="flex flex-1 flex-col mx-auto w-full max-w-lg px-4 pb-8">
+      <div className="relative flex flex-1 flex-col mx-auto w-full max-w-lg px-4 pb-8">
         {/* Step 1: Basic Profile */}
         {step === 1 && (
           <div className="animate-fade-in flex-1 space-y-6 py-4">
             <div>
-              <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                <User className="h-5 w-5 text-primary" />
+              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-primary/10">
+                <User className="h-6 w-6 text-primary" />
               </div>
-              <h1 className="mt-3 text-2xl font-bold">Let's set up your profile</h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Tell us a bit about yourself
+              <h1 className="mt-3 text-2xl font-extrabold font-display">Let's set up your profile</h1>
+              <p className="mt-1 text-sm font-medium text-muted-foreground">
+                Tell us a bit about yourself 🙂
               </p>
             </div>
 
             <div className="space-y-4">
               <div className="space-y-1.5">
-                <Label>Full Name <span className="text-destructive">*</span></Label>
+                <Label className="font-bold">Full Name <span className="text-destructive">*</span></Label>
                 <Input
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Your full name"
                   maxLength={100}
-                  className="h-11"
+                  className="h-12 rounded-2xl text-base"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div className="space-y-1.5">
-                  <Label>Age <span className="text-destructive">*</span></Label>
+                  <Label className="font-bold">Age <span className="text-destructive">*</span></Label>
                   <Input
                     type="number"
                     value={age}
@@ -147,13 +151,13 @@ export default function Onboarding() {
                     placeholder="25"
                     min={18}
                     max={65}
-                    className="h-11"
+                    className="h-12 rounded-2xl text-base"
                   />
                 </div>
                 <div className="space-y-1.5">
-                  <Label>Gender <span className="text-destructive">*</span></Label>
+                  <Label className="font-bold">Gender <span className="text-destructive">*</span></Label>
                   <Select value={gender} onValueChange={setGender}>
-                    <SelectTrigger className="h-11"><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectTrigger className="h-12 rounded-2xl"><SelectValue placeholder="Select" /></SelectTrigger>
                     <SelectContent>
                       <SelectItem value="male">Male</SelectItem>
                       <SelectItem value="female">Female</SelectItem>
@@ -165,13 +169,13 @@ export default function Onboarding() {
               </div>
 
               <div className="space-y-1.5">
-                <Label>Work Experience</Label>
+                <Label className="font-bold">Work Experience</Label>
                 <Input
                   value={workExp}
                   onChange={(e) => setWorkExp(e.target.value)}
                   placeholder="e.g. 3 years at McKinsey"
                   maxLength={200}
-                  className="h-11"
+                  className="h-12 rounded-2xl text-base"
                 />
               </div>
             </div>
@@ -182,16 +186,16 @@ export default function Onboarding() {
         {step === 2 && (
           <div className="animate-fade-in flex-1 space-y-6 py-4">
             <div>
-              <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                <Zap className="h-5 w-5 text-primary" />
+              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-warm-coral/15">
+                <Zap className="h-6 w-6 text-warm-coral" />
               </div>
-              <h1 className="mt-3 text-2xl font-bold">What do you enjoy?</h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Pick the activities you're interested in
+              <h1 className="mt-3 text-2xl font-extrabold font-display">What do you enjoy?</h1>
+              <p className="mt-1 text-sm font-medium text-muted-foreground">
+                Pick activities that excite you ⚡
               </p>
             </div>
 
-            <div className="grid grid-cols-2 gap-2.5">
+            <div className="grid grid-cols-2 gap-2.5 stagger-children">
               {activityOptions.map((opt) => {
                 const selected = activities.includes(opt.value);
                 return (
@@ -199,14 +203,14 @@ export default function Onboarding() {
                     key={opt.value}
                     type="button"
                     onClick={() => setActivities(toggleItem(activities, opt.value))}
-                    className={`flex items-center gap-3 rounded-xl border p-3.5 text-left transition-all ${
+                    className={`flex items-center gap-3 rounded-2xl border p-4 text-left transition-all duration-300 ${
                       selected
-                        ? "border-primary bg-primary/5 shadow-sm"
-                        : "border-border bg-card hover:border-primary/40"
+                        ? "border-primary bg-primary/8 shadow-soft"
+                        : "border-border/50 bg-card hover:border-primary/30 hover:bg-secondary/50"
                     }`}
                   >
                     <span className="text-xl">{opt.icon}</span>
-                    <span className={`text-sm font-medium ${selected ? "text-foreground" : "text-muted-foreground"}`}>
+                    <span className={`text-sm font-bold ${selected ? "text-foreground" : "text-muted-foreground"}`}>
                       {opt.label}
                     </span>
                     {selected && (
@@ -217,7 +221,7 @@ export default function Onboarding() {
               })}
             </div>
 
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs font-bold text-muted-foreground text-center">
               {activities.length} selected · pick at least 1
             </p>
           </div>
@@ -227,19 +231,19 @@ export default function Onboarding() {
         {step === 3 && (
           <div className="animate-fade-in flex-1 space-y-6 py-4">
             <div>
-              <div className="mb-1 flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
-                <Heart className="h-5 w-5 text-primary" />
+              <div className="mb-2 flex h-12 w-12 items-center justify-center rounded-2xl bg-warm-lavender/15">
+                <Heart className="h-6 w-6 text-warm-lavender" />
               </div>
-              <h1 className="mt-3 text-2xl font-bold">Pick your interests</h1>
-              <p className="mt-1 text-sm text-muted-foreground">
-                We'll personalize your event feed
+              <h1 className="mt-3 text-2xl font-extrabold font-display">Pick your interests</h1>
+              <p className="mt-1 text-sm font-medium text-muted-foreground">
+                We'll personalize your feed 💝
               </p>
             </div>
 
             <div className="space-y-5">
               {interestCategories.map((cat) => (
-                <div key={cat.name}>
-                  <h3 className="mb-2.5 flex items-center gap-2 text-sm font-semibold">
+                <div key={cat.name} className={`rounded-2xl border p-4 ${cat.color}`}>
+                  <h3 className="mb-3 flex items-center gap-2 text-sm font-extrabold">
                     <span>{cat.icon}</span>
                     {cat.name}
                   </h3>
@@ -251,10 +255,10 @@ export default function Onboarding() {
                           key={tag}
                           type="button"
                           onClick={() => setInterests(toggleItem(interests, tag.toLowerCase()))}
-                          className={`rounded-full border px-3.5 py-2 text-sm font-medium transition-all ${
+                          className={`rounded-full border px-3.5 py-2 text-sm font-bold transition-all duration-300 ${
                             selected
-                              ? "border-primary bg-primary text-primary-foreground shadow-sm"
-                              : "border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground"
+                              ? "border-primary bg-primary text-primary-foreground shadow-soft"
+                              : "border-border/50 bg-card text-muted-foreground hover:border-primary/30 hover:text-foreground"
                           }`}
                         >
                           {tag}
@@ -266,7 +270,7 @@ export default function Onboarding() {
               ))}
             </div>
 
-            <p className="text-xs text-muted-foreground text-center">
+            <p className="text-xs font-bold text-muted-foreground text-center">
               {interests.length} selected · pick at least 1
             </p>
           </div>
@@ -279,7 +283,7 @@ export default function Onboarding() {
               type="button"
               variant="outline"
               onClick={() => setStep(step - 1)}
-              className="h-12 flex-1 gap-2"
+              className="h-13 flex-1 gap-2 rounded-2xl font-bold text-base"
             >
               <ArrowLeft className="h-4 w-4" />
               Back
@@ -291,7 +295,7 @@ export default function Onboarding() {
               type="button"
               onClick={() => setStep(step + 1)}
               disabled={step === 1 ? !step1Valid : !step2Valid}
-              className="h-12 flex-1 gap-2"
+              className="h-13 flex-1 gap-2 rounded-2xl font-bold text-base shadow-glow"
             >
               Continue
               <ArrowRight className="h-4 w-4" />
@@ -301,7 +305,7 @@ export default function Onboarding() {
               type="button"
               onClick={handleFinish}
               disabled={!step3Valid || saving}
-              className="h-12 flex-1 gap-2"
+              className="h-13 flex-1 gap-2 rounded-2xl font-bold text-base shadow-glow"
             >
               {saving ? (
                 <>
@@ -311,7 +315,7 @@ export default function Onboarding() {
               ) : (
                 <>
                   <Check className="h-4 w-4" />
-                  Get Started
+                  Get Started 🎉
                 </>
               )}
             </Button>
