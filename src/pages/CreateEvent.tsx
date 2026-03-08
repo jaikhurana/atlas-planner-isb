@@ -84,6 +84,7 @@ export default function CreateEvent() {
   const isValid =
     title.trim().length >= 2 &&
     category &&
+    subTags.length >= 1 &&
     date &&
     startTime &&
     endTime &&
