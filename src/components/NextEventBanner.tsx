@@ -27,12 +27,14 @@ const accentMap: Record<string, string> = {
 };
 
 export default function NextEventBanner({
+  id,
   title,
   start_time,
   end_time,
   location,
   event_type,
 }: NextEventBannerProps) {
+  const navigate = useNavigate();
   const startsIn = formatDistanceToNowStrict(new Date(start_time), { addSuffix: true });
 
   return (
