@@ -1,5 +1,7 @@
-import { MapPin, Clock, Bookmark, BookmarkCheck } from "lucide-react";
+import { MapPin, Clock, Bookmark, BookmarkCheck, Users } from "lucide-react";
 import { format } from "date-fns";
+import { useNavigate } from "react-router-dom";
+import { Button } from "@/components/ui/button";
 
 interface EventCardProps {
   id: string;
@@ -12,8 +14,10 @@ interface EventCardProps {
   is_mandatory?: boolean;
   club_name?: string | null;
   category?: string | null;
+  created_by?: string;
   isSaved?: boolean;
   onToggleSave?: (id: string) => void;
+  compact?: boolean;
 }
 
 const typeStyles: Record<string, string> = {
@@ -37,6 +41,14 @@ const typeLabels: Record<string, string> = {
   private: "Private",
 };
 
+const categoryStyles: Record<string, string> = {
+  academic: "bg-amber-100 text-amber-700 border-amber-200",
+  sports: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  cultural: "bg-violet-100 text-violet-700 border-violet-200",
+  social: "bg-pink-100 text-pink-700 border-pink-200",
+  other: "bg-secondary text-muted-foreground border-border",
+};
+
 export default function EventCard({
   id,
   title,
@@ -49,36 +61,55 @@ export default function EventCard({
   category,
   isSaved,
   onToggleSave,
+  compact,
 }: EventCardProps) {
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate(`/event/${id}`);
+  };
+
   return (
-    <div className="animate-fade-in rounded-lg border border-border bg-card p-4 shadow-sm">
+    <div
+      onClick={handleClick}
+      className="animate-fade-in cursor-pointer rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md active:shadow-sm"
+    >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
-          <div className="mb-2 flex flex-wrap items-center gap-2">
-            <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-xs font-medium ${typeStyles[event_type]}`}>
+          <div className="mb-2 flex flex-wrap items-center gap-1.5">
+            <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium ${typeStyles[event_type]}`}>
               <span className={`h-1.5 w-1.5 rounded-full ${dotStyles[event_type]}`} />
               {typeLabels[event_type]}
             </span>
+            {category && category !== "other" && (
+              <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium capitalize ${categoryStyles[category] ?? categoryStyles.other}`}>
+                {category}
+              </span>
+            )}
             {is_mandatory && event_type !== "mandatory" && (
-              <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-xs font-medium text-destructive">
+              <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive">
                 Mandatory
               </span>
             )}
-            {club_name && (
-              <span className="text-xs text-muted-foreground">{club_name}</span>
-            )}
-            {category && category !== "other" && (
-              <span className="text-xs text-muted-foreground capitalize">{category}</span>
-            )}
           </div>
+
           <h3 className="font-semibold leading-tight text-card-foreground">{title}</h3>
-          {description && (
-            <p className="mt-1 text-sm text-muted-foreground line-clamp-2">{description}</p>
+
+          {club_name && (
+            <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+              <Users className="h-3 w-3" />
+              {club_name}
+            </p>
           )}
-          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
+
+          {!compact && description && (
+            <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">{description}</p>
+          )}
+
+          <div className="mt-2.5 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
             <span className="inline-flex items-center gap-1">
               <Clock className="h-3.5 w-3.5" />
-              {format(new Date(start_time), "MMM d, h:mm a")}
+              {format(new Date(start_time), "EEE, MMM d · h:mm a")}
             </span>
             {location && (
               <span className="inline-flex items-center gap-1">
@@ -88,10 +119,14 @@ export default function EventCard({
             )}
           </div>
         </div>
+
         {onToggleSave && event_type !== "private" && (
           <button
-            onClick={() => onToggleSave(id)}
-            className="mt-1 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleSave(id);
+            }}
+            className="mt-1 shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary"
           >
             {isSaved ? (
               <BookmarkCheck className="h-5 w-5 text-foreground" />

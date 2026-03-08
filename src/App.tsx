@@ -44,6 +44,7 @@ function AppRoutes() {
         <Route path="/personal" element={<PersonalCalendar />} />
         <Route path="/create" element={<CreateEvent />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/event/:id" element={<EventDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />
