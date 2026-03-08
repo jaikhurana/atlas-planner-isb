@@ -1,8 +1,9 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useRef } from "react";
 import {
-  startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, format, isToday,
+  startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, format, isToday, addWeeks,
 } from "date-fns";
 import { useNavigate } from "react-router-dom";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 type CalEvent = {
   id: string;
@@ -22,10 +23,17 @@ const colorMap: Record<string, string> = {
 export default function WeekStrip({ events = [] }: { events: CalEvent[] }) {
   const navigate = useNavigate();
   const today = new Date();
-  const weekStart = startOfWeek(today, { weekStartsOn: 1 });
-  const weekEnd = endOfWeek(today, { weekStartsOn: 1 });
-  const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
+  const [weekOffset, setWeekOffset] = useState(0);
   const [selectedDay, setSelectedDay] = useState<string>(format(today, "yyyy-MM-dd"));
+  const [direction, setDirection] = useState<"left" | "right" | null>(null);
+
+  // Swipe handling
+  const touchStartX = useRef<number | null>(null);
+
+  const baseDate = addWeeks(today, weekOffset);
+  const weekStart = startOfWeek(baseDate, { weekStartsOn: 1 });
+  const weekEnd = endOfWeek(baseDate, { weekStartsOn: 1 });
+  const days = eachDayOfInterval({ start: weekStart, end: weekEnd });
 
   const eventsByDay = useMemo(() => {
     const map = new Map<string, CalEvent[]>();
@@ -38,17 +46,83 @@ export default function WeekStrip({ events = [] }: { events: CalEvent[] }) {
 
   const selectedEvents = eventsByDay.get(selectedDay) ?? [];
 
+  const goToWeek = (offset: number) => {
+    setDirection(offset > weekOffset ? "left" : "right");
+    setWeekOffset(offset);
+    // Auto-select today if navigating back to current week, otherwise select Monday
+    const newBase = addWeeks(today, offset);
+    const newStart = startOfWeek(newBase, { weekStartsOn: 1 });
+    if (offset === 0) {
+      setSelectedDay(format(today, "yyyy-MM-dd"));
+    } else {
+      setSelectedDay(format(newStart, "yyyy-MM-dd"));
+    }
+    setTimeout(() => setDirection(null), 300);
+  };
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    if (Math.abs(diff) > 50) {
+      if (diff < 0) goToWeek(weekOffset + 1);
+      else goToWeek(weekOffset - 1);
+    }
+    touchStartX.current = null;
+  };
+
+  const weekLabel = weekOffset === 0
+    ? "This Week"
+    : weekOffset === 1
+    ? "Next Week"
+    : weekOffset === -1
+    ? "Last Week"
+    : format(weekStart, "MMM d") + " – " + format(weekEnd, "MMM d");
+
   return (
     <div className="animate-fade-in rounded-3xl border border-border/50 bg-card p-4 shadow-card">
       <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
-          This Week
-        </h3>
-        <span className="text-xs font-medium text-muted-foreground">
-          {format(weekStart, "MMM d")} – {format(weekEnd, "MMM d")}
-        </span>
+        <button
+          onClick={() => goToWeek(weekOffset - 1)}
+          className="rounded-lg p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+        >
+          <ChevronLeft className="h-4 w-4" />
+        </button>
+        <div className="flex flex-col items-center">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+            {weekLabel}
+          </h3>
+          <span className="text-[10px] font-medium text-muted-foreground/70">
+            {format(weekStart, "MMM d")} – {format(weekEnd, "MMM d")}
+          </span>
+        </div>
+        <button
+          onClick={() => goToWeek(weekOffset + 1)}
+          className="rounded-lg p-1 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+        >
+          <ChevronRight className="h-4 w-4" />
+        </button>
       </div>
-      <div className="grid grid-cols-7 gap-1">
+
+      {weekOffset !== 0 && (
+        <button
+          onClick={() => goToWeek(0)}
+          className="mx-auto mb-2 block text-[10px] font-semibold text-primary hover:underline"
+        >
+          Back to today
+        </button>
+      )}
+
+      <div
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className={`grid grid-cols-7 gap-1 transition-all duration-300 ${
+          direction === "left" ? "animate-slide-in-right" : direction === "right" ? "animate-slide-in-left" : ""
+        }`}
+      >
         {days.map((day) => {
           const key = format(day, "yyyy-MM-dd");
           const dayEvents = eventsByDay.get(key) ?? [];
