@@ -173,7 +173,7 @@ export default function EventDetail() {
             </span>
           )}
         </div>
-        <h1 className="text-2xl font-bold font-display leading-tight">{event.title}</h1>
+        <h1 className="text-2xl font-extrabold font-display leading-tight">{event.title}</h1>
         {event.club_name && (
           <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
             <Users className="h-4 w-4" />
