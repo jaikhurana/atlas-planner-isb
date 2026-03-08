@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useMemo, useEffect } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { useGlobalEvents, useSavedEventIds, useToggleSave } from "@/hooks/useEvents";
 import EventCard from "@/components/EventCard";
 import EventCardSkeleton from "@/components/EventCardSkeleton";
@@ -35,10 +35,11 @@ const dotColor: Record<string, string> = {
 };
 
 export default function GlobalCalendar() {
+  const [searchParams] = useSearchParams();
   const [view, setView] = useState<ViewMode>("calendar");
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("interest") ?? "");
   const [filterCategory, setFilterCategory] = useState<string[]>([]);
   const [filterEventType, setFilterEventType] = useState<string[]>([]);
   const [filterDateFrom, setFilterDateFrom] = useState("");
@@ -74,6 +75,7 @@ export default function GlobalCalendar() {
           e.title.toLowerCase().includes(q) ||
           (e.description?.toLowerCase().includes(q) ?? false) ||
           (e.club_name?.toLowerCase().includes(q) ?? false) ||
+          (e.category?.toLowerCase().includes(q) ?? false) ||
           (e.sub_tags?.some((t: string) => t.toLowerCase().includes(q)) ?? false);
         if (!match) return false;
       }
