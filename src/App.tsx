@@ -11,13 +11,14 @@ import PersonalCalendar from "./pages/PersonalCalendar";
 import CreateEvent from "./pages/CreateEvent";
 import Profile from "./pages/Profile";
 import EventDetail from "./pages/EventDetail";
+import Onboarding from "./pages/Onboarding";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
 function AppRoutes() {
-  const { session, loading } = useAuth();
+  const { session, profile, loading } = useAuth();
 
   if (loading) {
     return (
@@ -32,6 +33,16 @@ function AppRoutes() {
       <Routes>
         <Route path="/auth" element={<Auth />} />
         <Route path="*" element={<Navigate to="/auth" replace />} />
+      </Routes>
+    );
+  }
+
+  // Show onboarding if profile exists but not completed
+  if (profile && !profile.onboarding_completed) {
+    return (
+      <Routes>
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="*" element={<Navigate to="/onboarding" replace />} />
       </Routes>
     );
   }
