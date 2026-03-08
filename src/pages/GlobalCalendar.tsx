@@ -330,14 +330,14 @@ export default function GlobalCalendar() {
 
         {/* Events List */}
         {isLoading ? (
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-children">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-28 animate-pulse rounded-lg bg-secondary" />
+              <EventCardSkeleton key={i} />
             ))}
           </div>
         ) : displayEvents.length ? (
-          <div className="space-y-3">
-            {(selectedDate ? displayEvents : displayEvents).map((event) => (
+          <div className="space-y-3 stagger-children">
+            {displayEvents.map((event) => (
               <EventCard
                 key={event.id}
                 {...event}
@@ -347,19 +347,12 @@ export default function GlobalCalendar() {
             ))}
           </div>
         ) : (
-          <div className="rounded-lg border border-dashed border-border py-12 text-center">
-            <p className="text-sm text-muted-foreground">
-              {search || activeFilterCount ? "No events match your filters" : "No events yet"}
-            </p>
-            {(search || activeFilterCount > 0) && (
-              <button
-                onClick={() => { clearFilters(); setSearch(""); }}
-                className="mt-2 text-xs font-medium text-muted-foreground underline-offset-4 hover:underline"
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
+          <EmptyState
+            icon={Search}
+            title={search || activeFilterCount ? "No matching events" : "No events yet"}
+            description={search || activeFilterCount ? "Try adjusting your filters or search terms." : "Check back later for new events."}
+            action={search || activeFilterCount ? { label: "Clear Filters", onClick: () => { clearFilters(); setSearch(""); } } : undefined}
+          />
         )}
       </div>
     </div>
