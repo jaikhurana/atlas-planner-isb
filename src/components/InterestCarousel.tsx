@@ -3,16 +3,33 @@ import { useNavigate } from "react-router-dom";
 import { Sparkles } from "lucide-react";
 
 const interestEmoji: Record<string, string> = {
-  academic: "📚",
-  sports: "🏃",
-  cultural: "🎭",
-  workshops: "🔧",
-  networking: "🤝",
-  competitions: "🏆",
-  social: "🎉",
-  wellness: "🧘",
-  career: "💼",
-  technology: "💻",
+  // Activity preferences
+  workshops: "🛠️",
+  meetups: "🤝",
+  speaker_sessions: "🎤",
+  hackathons: "💻",
+  sports: "⚽",
+  cultural_events: "🎭",
+  networking: "🌐",
+  // Academic interests
+  consulting: "📊",
+  finance: "💰",
+  marketing: "📣",
+  product: "🚀",
+  strategy: "♟️",
+  entrepreneurship: "💡",
+  // Sports interests
+  football: "⚽",
+  cricket: "🏏",
+  badminton: "🏸",
+  running: "🏃",
+  gym: "🏋️",
+  // Cultural interests
+  music: "🎵",
+  dance: "💃",
+  movies: "🎬",
+  food: "🍕",
+  photography: "📷",
 };
 
 export default function InterestCarousel() {
