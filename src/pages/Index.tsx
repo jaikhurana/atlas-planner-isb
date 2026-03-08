@@ -90,7 +90,7 @@ export default function Index() {
           <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
             Your Week
           </h2>
-          <WeekStrip events={personalEvents ?? []} />
+          <WeekStrip events={globalEvents ?? []} />
         </section>
 
         {/* Upcoming Events */}
