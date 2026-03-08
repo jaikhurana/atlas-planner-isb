@@ -135,7 +135,7 @@ export default function EventDetail() {
   return (
     <div className="min-h-screen pb-safe">
       {/* Top bar */}
-      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border/60 bg-card/80 px-4 py-3 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border/40 bg-card/80 px-4 py-3 backdrop-blur-2xl">
         <button onClick={() => navigate(-1)} className="rounded-lg p-1.5 hover:bg-secondary">
           <ArrowLeft className="h-5 w-5" />
         </button>
