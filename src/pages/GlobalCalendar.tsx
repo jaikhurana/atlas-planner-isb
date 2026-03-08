@@ -115,9 +115,9 @@ export default function GlobalCalendar() {
   return (
     <div className="pb-safe">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-card/80 backdrop-blur-xl">
+      <header className="sticky top-0 z-40 border-b border-border/40 bg-card/80 backdrop-blur-2xl">
         <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-bold font-display">Discover</h1>
+          <h1 className="text-lg font-extrabold font-display">Discover</h1>
           <div className="flex items-center gap-1">
             <button
               onClick={() => { setView("calendar"); setSelectedDate(null); }}
