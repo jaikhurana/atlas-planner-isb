@@ -3,6 +3,7 @@ import { useGlobalEvents, usePersonalEvents, useSavedEventIds, useToggleSave } f
 import EventCard from "@/components/EventCard";
 import NextEventBanner from "@/components/NextEventBanner";
 import WeekStrip from "@/components/WeekStrip";
+import { NotificationBell } from "@/components/NotificationPanel";
 import { Globe } from "lucide-react";
 
 export default function Index() {
@@ -28,16 +29,19 @@ export default function Index() {
   return (
     <div className="pb-safe">
       <header className="sticky top-0 z-40 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-lg">
-        <div className="flex items-center gap-3">
-          <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
-            <Globe className="h-4 w-4 text-primary-foreground" />
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary">
+              <Globe className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <div>
+              <h1 className="text-lg font-bold leading-tight">Atlas</h1>
+              <p className="text-xs text-muted-foreground">
+                Hey, {profile?.full_name?.split(" ")[0] ?? "there"} 👋
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-lg font-bold leading-tight">Atlas</h1>
-            <p className="text-xs text-muted-foreground">
-              Hey, {profile?.full_name?.split(" ")[0] ?? "there"} 👋
-            </p>
-          </div>
+          <NotificationBell />
         </div>
       </header>
 

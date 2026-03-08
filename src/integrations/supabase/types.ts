@@ -49,6 +49,7 @@ export type Database = {
           created_at: string
           event_id: string
           id: string
+          reminder_minutes: number[] | null
           status: string
           user_id: string
         }
@@ -56,6 +57,7 @@ export type Database = {
           created_at?: string
           event_id: string
           id?: string
+          reminder_minutes?: number[] | null
           status?: string
           user_id: string
         }
@@ -63,6 +65,7 @@ export type Database = {
           created_at?: string
           event_id?: string
           id?: string
+          reminder_minutes?: number[] | null
           status?: string
           user_id?: string
         }
@@ -139,32 +142,64 @@ export type Database = {
         }
         Relationships: []
       }
-      notifications: {
+      notification_mutes: {
         Row: {
           created_at: string
-          delivered_time: string | null
-          event_id: string | null
+          event_id: string
           id: string
-          notification_type: string
-          scheduled_time: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
-          delivered_time?: string | null
-          event_id?: string | null
+          event_id: string
           id?: string
-          notification_type: string
-          scheduled_time?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
-          delivered_time?: string | null
+          event_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_mutes_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          event_id: string | null
+          id: string
+          is_read: boolean
+          notification_type: string
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
           event_id?: string | null
           id?: string
+          is_read?: boolean
+          notification_type: string
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          event_id?: string | null
+          id?: string
+          is_read?: boolean
           notification_type?: string
-          scheduled_time?: string | null
+          title?: string
           user_id?: string
         }
         Relationships: [

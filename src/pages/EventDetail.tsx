@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import ReminderSettings from "@/components/ReminderSettings";
 
 const typeStyles: Record<string, string> = {
   mandatory: "bg-event-admin/10 text-event-admin border-event-admin/20",
@@ -221,6 +222,11 @@ export default function EventDetail() {
               )}
             </div>
           </div>
+
+          {/* Reminder Settings */}
+          {isSaved && event.event_type !== "private" && isUpcoming && (
+            <ReminderSettings eventId={event.id} />
+          )}
         </div>
 
         {/* Tags */}
