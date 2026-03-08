@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCreateEvent } from "@/hooks/useEvents";
@@ -6,52 +6,124 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
+import {
+  CalendarDays, MapPin, Clock, Eye, EyeOff, Users,
+  X, Plus, Check, Tag, Sparkles,
+} from "lucide-react";
+
+const categories = [
+  { value: "academic", label: "Academic", icon: "📚" },
+  { value: "sports", label: "Sports", icon: "⚽" },
+  { value: "cultural", label: "Cultural", icon: "🎭" },
+] as const;
+
+const suggestedTags: Record<string, string[]> = {
+  academic: ["Workshop", "Guest Lecture", "Case Study", "Panel Discussion", "Career Talk", "Networking"],
+  sports: ["Cricket", "Football", "Basketball", "Badminton", "Tennis", "Yoga", "Marathon"],
+  cultural: ["Music", "Dance", "Art", "Drama", "Film Screening", "Photography", "Poetry"],
+};
 
 export default function CreateEvent() {
   const { user, roles } = useAuth();
   const navigate = useNavigate();
   const createEvent = useCreateEvent();
+  const tagInputRef = useRef<HTMLInputElement>(null);
 
+  // Form state
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [eventType, setEventType] = useState<string>("open_invite");
-  const [category, setCategory] = useState<string>("other");
-  const [location, setLocation] = useState("");
+  const [category, setCategory] = useState<string>("");
+  const [subTags, setSubTags] = useState<string[]>([]);
+  const [tagInput, setTagInput] = useState("");
+  const [date, setDate] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [isMandatory, setIsMandatory] = useState(false);
-  const [isOpenInvite, setIsOpenInvite] = useState(true);
-  const [clubName, setClubName] = useState("");
+  const [location, setLocation] = useState("");
+  const [visibility, setVisibility] = useState<"open_invite" | "private">("open_invite");
   const [maxCap, setMaxCap] = useState("");
   const [ignoreCap, setIgnoreCap] = useState(false);
+  const [requiresApproval, setRequiresApproval] = useState(false);
+  const [clubName, setClubName] = useState("");
+  const [isMandatory, setIsMandatory] = useState(false);
 
+  // Derived
   const canCreateAdmin = roles.includes("admin");
   const canCreateClub = roles.includes("club") || roles.includes("admin");
+  const isOpen = visibility === "open_invite";
+
+  // Tag helpers
+  const addTag = (tag: string) => {
+    const trimmed = tag.trim();
+    if (trimmed && !subTags.includes(trimmed) && subTags.length < 10) {
+      setSubTags([...subTags, trimmed]);
+    }
+    setTagInput("");
+  };
+
+  const removeTag = (tag: string) => {
+    setSubTags(subTags.filter((t) => t !== tag));
+  };
+
+  const handleTagKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter" || e.key === ",") {
+      e.preventDefault();
+      addTag(tagInput);
+    }
+    if (e.key === "Backspace" && !tagInput && subTags.length) {
+      setSubTags(subTags.slice(0, -1));
+    }
+  };
+
+  const currentSuggestions = category
+    ? (suggestedTags[category] ?? []).filter((t) => !subTags.includes(t))
+    : [];
+
+  // Validation
+  const isValid =
+    title.trim().length >= 2 &&
+    category &&
+    date &&
+    startTime &&
+    endTime &&
+    location.trim().length > 0;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user || !isValid) return;
+
+    const startDateTime = new Date(`${date}T${startTime}`);
+    const endDateTime = new Date(`${date}T${endTime}`);
+
+    if (endDateTime <= startDateTime) {
+      toast.error("End time must be after start time");
+      return;
+    }
+
+    // Determine event_type based on role + visibility
+    let eventType: "mandatory" | "club" | "open_invite" | "private" = visibility;
+    if (canCreateAdmin && isMandatory) eventType = "mandatory";
+    else if (canCreateClub && clubName) eventType = "club";
 
     try {
       await createEvent.mutateAsync({
-        title,
-        description: description || undefined,
-        event_type: eventType as any,
+        title: title.trim(),
+        description: description.trim() || undefined,
+        event_type: eventType,
         category: category as any,
-        location: location || undefined,
-        start_time: new Date(startTime).toISOString(),
-        end_time: new Date(endTime).toISOString(),
+        sub_tags: subTags.length ? subTags : undefined,
+        location: location.trim(),
+        start_time: startDateTime.toISOString(),
+        end_time: endDateTime.toISOString(),
         is_mandatory: isMandatory,
-        is_open_invite: isOpenInvite,
-        club_name: clubName || undefined,
+        is_open_invite: isOpen,
+        club_name: clubName.trim() || undefined,
         max_cap: maxCap ? parseInt(maxCap) : undefined,
         ignore_cap: ignoreCap,
         created_by: user.id,
       });
-      toast.success("Event created!");
+      toast.success("Event created successfully! 🎉");
       navigate("/");
     } catch (err: any) {
       toast.error(err.message);
@@ -61,101 +133,317 @@ export default function CreateEvent() {
   return (
     <div className="pb-safe">
       <header className="sticky top-0 z-40 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-lg">
-        <h1 className="text-lg font-bold">Create Event</h1>
+        <div className="flex items-center justify-between">
+          <h1 className="text-lg font-bold">Create Event</h1>
+          <button
+            onClick={() => navigate(-1)}
+            className="text-sm font-medium text-muted-foreground"
+          >
+            Cancel
+          </button>
+        </div>
       </header>
 
-      <form onSubmit={handleSubmit} className="mx-auto max-w-lg space-y-4 px-4 py-5">
-        <div className="space-y-1.5">
-          <Label>Title</Label>
-          <Input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Event name" required />
-        </div>
-
-        <div className="space-y-1.5">
-          <Label>Description</Label>
-          <Textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="What's this event about?" rows={3} />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label>Event Type</Label>
-            <Select value={eventType} onValueChange={setEventType}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="open_invite">Open Invite</SelectItem>
-                <SelectItem value="private">Private</SelectItem>
-                {canCreateClub && <SelectItem value="club">Club</SelectItem>}
-                {canCreateAdmin && <SelectItem value="mandatory">Mandatory</SelectItem>}
-              </SelectContent>
-            </Select>
-          </div>
-          <div className="space-y-1.5">
-            <Label>Category</Label>
-            <Select value={category} onValueChange={setCategory}>
-              <SelectTrigger><SelectValue /></SelectTrigger>
-              <SelectContent>
-                <SelectItem value="academic">Academic</SelectItem>
-                <SelectItem value="sports">Sports</SelectItem>
-                <SelectItem value="cultural">Cultural</SelectItem>
-                <SelectItem value="social">Social</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        {eventType === "club" && (
-          <div className="space-y-1.5">
-            <Label>Club Name</Label>
-            <Input value={clubName} onChange={(e) => setClubName(e.target.value)} placeholder="e.g. Finance Club" />
-          </div>
-        )}
-
-        <div className="space-y-1.5">
-          <Label>Location</Label>
-          <Input value={location} onChange={(e) => setLocation(e.target.value)} placeholder="Where?" />
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label>Start</Label>
-            <Input type="datetime-local" value={startTime} onChange={(e) => setStartTime(e.target.value)} required />
-          </div>
-          <div className="space-y-1.5">
-            <Label>End</Label>
-            <Input type="datetime-local" value={endTime} onChange={(e) => setEndTime(e.target.value)} required />
-          </div>
-        </div>
-
-        <div className="grid grid-cols-2 gap-3">
-          <div className="space-y-1.5">
-            <Label>Max Capacity</Label>
-            <Input type="number" value={maxCap} onChange={(e) => setMaxCap(e.target.value)} placeholder="Unlimited" />
-          </div>
-          <div className="flex items-end pb-1">
-            <div className="flex items-center gap-2">
-              <Switch id="ignoreCap" checked={ignoreCap} onCheckedChange={setIgnoreCap} />
-              <Label htmlFor="ignoreCap" className="cursor-pointer text-sm">Ignore cap</Label>
+      <form onSubmit={handleSubmit} className="mx-auto max-w-lg px-4 py-5">
+        <div className="space-y-6">
+          {/* Title & Description */}
+          <section className="space-y-4">
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium">
+                Event Title <span className="text-destructive">*</span>
+              </Label>
+              <Input
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Annual Business Case Competition"
+                maxLength={120}
+                required
+                className="h-11"
+              />
+              <p className="text-[11px] text-muted-foreground text-right">
+                {title.length}/120
+              </p>
             </div>
-          </div>
+
+            <div className="space-y-1.5">
+              <Label className="text-sm font-medium">Description</Label>
+              <Textarea
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Tell people what to expect..."
+                rows={4}
+                maxLength={2000}
+              />
+              {description.length > 0 && (
+                <p className="text-[11px] text-muted-foreground text-right">
+                  {description.length}/2000
+                </p>
+              )}
+            </div>
+          </section>
+
+          {/* Category */}
+          <section className="space-y-3">
+            <Label className="text-sm font-medium">
+              Category <span className="text-destructive">*</span>
+            </Label>
+            <div className="grid grid-cols-3 gap-2">
+              {categories.map((c) => (
+                <button
+                  key={c.value}
+                  type="button"
+                  onClick={() => {
+                    setCategory(c.value);
+                    setSubTags([]);
+                  }}
+                  className={`flex flex-col items-center gap-1.5 rounded-xl border p-3 text-sm font-medium transition-all ${
+                    category === c.value
+                      ? "border-primary bg-primary/5 text-foreground shadow-sm"
+                      : "border-border bg-card text-muted-foreground hover:border-primary/40"
+                  }`}
+                >
+                  <span className="text-xl">{c.icon}</span>
+                  <span className="text-xs">{c.label}</span>
+                </button>
+              ))}
+            </div>
+          </section>
+
+          {/* Subcategory Tags */}
+          <section className="space-y-3">
+            <Label className="text-sm font-medium flex items-center gap-1.5">
+              <Tag className="h-3.5 w-3.5" />
+              Tags
+            </Label>
+
+            {/* Selected tags */}
+            <div className="flex flex-wrap gap-1.5">
+              {subTags.map((tag) => (
+                <span
+                  key={tag}
+                  className="inline-flex items-center gap-1 rounded-full border border-primary/20 bg-primary/5 px-2.5 py-1 text-xs font-medium text-foreground"
+                >
+                  {tag}
+                  <button type="button" onClick={() => removeTag(tag)}>
+                    <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
+                  </button>
+                </span>
+              ))}
+              <div className="relative flex-1 min-w-[120px]">
+                <Input
+                  ref={tagInputRef}
+                  value={tagInput}
+                  onChange={(e) => setTagInput(e.target.value)}
+                  onKeyDown={handleTagKeyDown}
+                  placeholder={subTags.length ? "Add more..." : "Type and press Enter"}
+                  className="h-8 border-none bg-transparent px-1 text-xs shadow-none focus-visible:ring-0"
+                />
+              </div>
+            </div>
+
+            {/* Suggested tags */}
+            {currentSuggestions.length > 0 && (
+              <div>
+                <p className="mb-1.5 flex items-center gap-1 text-[11px] text-muted-foreground">
+                  <Sparkles className="h-3 w-3" />
+                  Suggested
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {currentSuggestions.map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => addTag(tag)}
+                      className="inline-flex items-center gap-1 rounded-full border border-dashed border-border px-2.5 py-1 text-xs text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+                    >
+                      <Plus className="h-2.5 w-2.5" />
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </section>
+
+          {/* Date & Time */}
+          <section className="space-y-3">
+            <Label className="text-sm font-medium flex items-center gap-1.5">
+              <CalendarDays className="h-3.5 w-3.5" />
+              Date & Time <span className="text-destructive">*</span>
+            </Label>
+            <div className="space-y-3">
+              <Input
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+                className="h-11"
+              />
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1">
+                  <label className="text-xs text-muted-foreground">Start Time</label>
+                  <Input
+                    type="time"
+                    value={startTime}
+                    onChange={(e) => setStartTime(e.target.value)}
+                    required
+                    className="h-11"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-xs text-muted-foreground">End Time</label>
+                  <Input
+                    type="time"
+                    value={endTime}
+                    onChange={(e) => setEndTime(e.target.value)}
+                    required
+                    className="h-11"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Location */}
+          <section className="space-y-1.5">
+            <Label className="text-sm font-medium flex items-center gap-1.5">
+              <MapPin className="h-3.5 w-3.5" />
+              Location <span className="text-destructive">*</span>
+            </Label>
+            <Input
+              value={location}
+              onChange={(e) => setLocation(e.target.value)}
+              placeholder="e.g. LRC Auditorium, ISB Hyderabad"
+              required
+              className="h-11"
+              maxLength={200}
+            />
+          </section>
+
+          {/* Visibility Toggle */}
+          <section className="space-y-3">
+            <Label className="text-sm font-medium">Visibility</Label>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => setVisibility("private")}
+                className={`flex items-center gap-2 rounded-xl border p-3.5 transition-all ${
+                  !isOpen
+                    ? "border-primary bg-primary/5 shadow-sm"
+                    : "border-border bg-card hover:border-primary/40"
+                }`}
+              >
+                <EyeOff className={`h-4.5 w-4.5 ${!isOpen ? "text-foreground" : "text-muted-foreground"}`} />
+                <div className="text-left">
+                  <p className={`text-sm font-medium ${!isOpen ? "text-foreground" : "text-muted-foreground"}`}>
+                    Private
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">Only you</p>
+                </div>
+              </button>
+              <button
+                type="button"
+                onClick={() => setVisibility("open_invite")}
+                className={`flex items-center gap-2 rounded-xl border p-3.5 transition-all ${
+                  isOpen
+                    ? "border-primary bg-primary/5 shadow-sm"
+                    : "border-border bg-card hover:border-primary/40"
+                }`}
+              >
+                <Eye className={`h-4.5 w-4.5 ${isOpen ? "text-foreground" : "text-muted-foreground"}`} />
+                <div className="text-left">
+                  <p className={`text-sm font-medium ${isOpen ? "text-foreground" : "text-muted-foreground"}`}>
+                    Open Invite
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">Everyone</p>
+                </div>
+              </button>
+            </div>
+          </section>
+
+          {/* Open Invite Options */}
+          {isOpen && (
+            <section className="animate-fade-in space-y-3 rounded-xl border border-border bg-card p-4">
+              <h4 className="flex items-center gap-1.5 text-sm font-medium">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                Attendance Settings
+              </h4>
+
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground">Max Attendees</label>
+                <Input
+                  type="number"
+                  value={maxCap}
+                  onChange={(e) => setMaxCap(e.target.value)}
+                  placeholder="Unlimited"
+                  min={1}
+                  className="h-10"
+                />
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
+                <div>
+                  <p className="text-sm font-medium">Ignore cap</p>
+                  <p className="text-[11px] text-muted-foreground">Allow overflow beyond max</p>
+                </div>
+                <Switch checked={ignoreCap} onCheckedChange={setIgnoreCap} />
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
+                <div>
+                  <p className="text-sm font-medium">Require approval</p>
+                  <p className="text-[11px] text-muted-foreground">Review attendees before confirming</p>
+                </div>
+                <Switch checked={requiresApproval} onCheckedChange={setRequiresApproval} />
+              </div>
+            </section>
+          )}
+
+          {/* Club / Admin options */}
+          {canCreateClub && (
+            <section className="space-y-3 rounded-xl border border-border bg-card p-4">
+              <h4 className="text-sm font-medium text-muted-foreground">Organizer</h4>
+              <div className="space-y-1.5">
+                <label className="text-xs text-muted-foreground">Club Name</label>
+                <Input
+                  value={clubName}
+                  onChange={(e) => setClubName(e.target.value)}
+                  placeholder="e.g. Finance Club"
+                  maxLength={100}
+                  className="h-10"
+                />
+              </div>
+              {canCreateAdmin && (
+                <div className="flex items-center justify-between rounded-lg border border-border px-3 py-2.5">
+                  <div>
+                    <p className="text-sm font-medium">Mandatory</p>
+                    <p className="text-[11px] text-muted-foreground">Required for all students</p>
+                  </div>
+                  <Switch checked={isMandatory} onCheckedChange={setIsMandatory} />
+                </div>
+              )}
+            </section>
+          )}
+
+          {/* Submit */}
+          <Button
+            type="submit"
+            className="w-full h-12 text-base font-semibold gap-2"
+            disabled={createEvent.isPending || !isValid}
+          >
+            {createEvent.isPending ? (
+              <>
+                <div className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
+                Creating...
+              </>
+            ) : (
+              <>
+                <Check className="h-4.5 w-4.5" />
+                Create Event
+              </>
+            )}
+          </Button>
         </div>
-
-        {canCreateAdmin && (
-          <div className="flex items-center justify-between rounded-lg border border-border p-3">
-            <Label htmlFor="mandatory" className="cursor-pointer">Mandatory for all</Label>
-            <Switch id="mandatory" checked={isMandatory} onCheckedChange={setIsMandatory} />
-          </div>
-        )}
-
-        {eventType !== "private" && (
-          <div className="flex items-center justify-between rounded-lg border border-border p-3">
-            <Label htmlFor="open" className="cursor-pointer">Open invite</Label>
-            <Switch id="open" checked={isOpenInvite} onCheckedChange={setIsOpenInvite} />
-          </div>
-        )}
-
-        <Button type="submit" className="w-full" disabled={createEvent.isPending}>
-          {createEvent.isPending ? "Creating..." : "Create Event"}
-        </Button>
       </form>
     </div>
   );
