@@ -41,10 +41,10 @@ const typeLabels: Record<string, string> = {
 };
 
 const categoryStyles: Record<string, string> = {
-  academic: "bg-amber-50 text-amber-700 border-amber-200/60",
-  sports: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
-  cultural: "bg-violet-50 text-violet-700 border-violet-200/60",
-  social: "bg-pink-50 text-pink-700 border-pink-200/60",
+  academic: "bg-warm-yellow/15 text-foreground border-warm-yellow/25",
+  sports: "bg-warm-teal/15 text-foreground border-warm-teal/25",
+  cultural: "bg-warm-lavender/15 text-foreground border-warm-lavender/25",
+  social: "bg-warm-coral/15 text-foreground border-warm-coral/25",
   other: "bg-secondary text-muted-foreground border-border",
 };
 
@@ -67,33 +67,33 @@ export default function EventCard({
   return (
     <div
       onClick={() => navigate(`/event/${id}`)}
-      className="group cursor-pointer rounded-2xl border border-border/60 bg-card p-4 shadow-card transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.99] active:shadow-card"
+      className="group cursor-pointer rounded-2xl border border-border/50 bg-card p-4 shadow-card transition-all duration-300 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.98]"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
           <div className="mb-2 flex flex-wrap items-center gap-1.5">
-            <span className={`inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium ${typeStyles[event_type]}`}>
+            <span className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold ${typeStyles[event_type]}`}>
               <span className={`h-1.5 w-1.5 rounded-full ${dotStyles[event_type]}`} />
               {typeLabels[event_type]}
             </span>
             {category && category !== "other" && (
-              <span className={`rounded-full border px-2 py-0.5 text-[11px] font-medium capitalize ${categoryStyles[category] ?? categoryStyles.other}`}>
+              <span className={`rounded-full border px-2.5 py-0.5 text-[11px] font-bold capitalize ${categoryStyles[category] ?? categoryStyles.other}`}>
                 {category}
               </span>
             )}
             {is_mandatory && event_type !== "mandatory" && (
-              <span className="rounded-full bg-destructive/10 px-2 py-0.5 text-[11px] font-medium text-destructive">
+              <span className="rounded-full bg-destructive/10 px-2.5 py-0.5 text-[11px] font-bold text-destructive">
                 Mandatory
               </span>
             )}
           </div>
 
-          <h3 className="font-semibold leading-tight text-card-foreground group-hover:text-foreground transition-colors">
+          <h3 className="font-bold leading-snug text-card-foreground group-hover:text-primary transition-colors duration-200">
             {title}
           </h3>
 
           {club_name && (
-            <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
+            <p className="mt-0.5 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
               <Users className="h-3 w-3" />
               {club_name}
             </p>
@@ -103,13 +103,13 @@ export default function EventCard({
             <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2 leading-relaxed">{description}</p>
           )}
 
-          <div className="mt-2.5 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
-            <span className="inline-flex items-center gap-1">
+          <div className="mt-3 flex flex-wrap items-center gap-3 text-xs font-medium text-muted-foreground">
+            <span className="inline-flex items-center gap-1.5">
               <Clock className="h-3.5 w-3.5" />
               {format(new Date(start_time), "EEE, MMM d · h:mm a")}
             </span>
             {location && (
-              <span className="inline-flex items-center gap-1">
+              <span className="inline-flex items-center gap-1.5">
                 <MapPin className="h-3.5 w-3.5" />
                 {location}
               </span>
@@ -123,10 +123,10 @@ export default function EventCard({
               e.stopPropagation();
               onToggleSave(id);
             }}
-            className="mt-1 shrink-0 rounded-full p-2 text-muted-foreground transition-all hover:bg-secondary hover:scale-110 active:scale-95"
+            className="mt-1 shrink-0 rounded-full p-2 text-muted-foreground transition-all duration-200 hover:bg-primary/10 hover:text-primary hover:scale-110 active:scale-95"
           >
             {isSaved ? (
-              <BookmarkCheck className="h-5 w-5 text-foreground" />
+              <BookmarkCheck className="h-5 w-5 text-primary" />
             ) : (
               <Bookmark className="h-5 w-5" />
             )}

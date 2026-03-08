@@ -7,7 +7,7 @@ import WeekStrip from "@/components/WeekStrip";
 import EmptyState from "@/components/EmptyState";
 import { NotificationBell } from "@/components/NotificationPanel";
 import FeatureTour from "@/components/FeatureTour";
-import { Globe, CalendarPlus, Sparkles } from "lucide-react";
+import { CalendarPlus, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function Index() {
@@ -31,18 +31,31 @@ export default function Index() {
     toggleSave.mutate({ eventId: id, saved: savedIds?.has(id) ?? false });
   };
 
+  const greeting = (() => {
+    const h = new Date().getHours();
+    if (h < 12) return "Good morning";
+    if (h < 17) return "Good afternoon";
+    return "Good evening";
+  })();
+
   return (
     <div className="pb-safe">
-      <header className="sticky top-0 z-40 border-b border-border/60 bg-card/80 px-4 py-3 backdrop-blur-xl">
+      {/* Decorative bg blob */}
+      <div className="pointer-events-none fixed top-0 left-0 right-0 h-80 overflow-hidden">
+        <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-primary/6 blur-3xl" />
+        <div className="absolute top-10 -left-20 h-48 w-48 rounded-full bg-warm-yellow/8 blur-3xl" />
+      </div>
+
+      <header className="sticky top-0 z-40 border-b border-border/40 bg-card/80 px-4 py-4 backdrop-blur-2xl">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary shadow-sm">
-              <Globe className="h-4.5 w-4.5 text-primary-foreground" />
+            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-primary shadow-glow">
+              <span className="text-lg">🌍</span>
             </div>
             <div>
-              <h1 className="text-lg font-bold font-display leading-tight">Atlas</h1>
-              <p className="text-xs text-muted-foreground">
-                Hey, {profile?.full_name?.split(" ")[0] ?? "there"} 👋
+              <h1 className="text-lg font-extrabold font-display leading-tight">Atlas</h1>
+              <p className="text-xs font-medium text-muted-foreground">
+                {greeting}, {profile?.full_name?.split(" ")[0] ?? "there"} 👋
               </p>
             </div>
           </div>
@@ -50,10 +63,10 @@ export default function Index() {
         </div>
       </header>
 
-      <main className="mx-auto max-w-lg space-y-6 px-4 py-5">
-        {/* 1. Next Event Banner */}
+      <main className="relative mx-auto max-w-lg space-y-6 px-4 py-5">
+        {/* Next Event Banner */}
         {isLoading ? (
-          <div className="h-36 animate-pulse-soft rounded-2xl bg-secondary" />
+          <div className="h-40 animate-pulse-soft rounded-3xl bg-secondary" />
         ) : nextEvent ? (
           <NextEventBanner
             title={nextEvent.title}
@@ -66,22 +79,22 @@ export default function Index() {
           <EmptyState
             icon={Sparkles}
             title="No upcoming events"
-            description="Browse the global calendar to discover and save events that interest you."
+            description="Discover exciting campus events and save the ones that catch your eye!"
             action={{ label: "Explore Events", onClick: () => navigate("/global") }}
           />
         )}
 
-        {/* 2. Personal Calendar Week View */}
+        {/* Week View */}
         <section>
-          <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
             Your Week
           </h2>
           <WeekStrip events={personalEvents ?? []} />
         </section>
 
-        {/* 3. Upcoming Events Feed */}
+        {/* Upcoming Events */}
         <section>
-          <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
+          <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
             Upcoming Events
           </h2>
           {isLoading ? (
