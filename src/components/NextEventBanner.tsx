@@ -1,8 +1,10 @@
 import { format, formatDistanceToNowStrict } from "date-fns";
 import { MapPin, Clock, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface NextEventBannerProps {
+  id: string;
   title: string;
   start_time: string;
   end_time: string;
