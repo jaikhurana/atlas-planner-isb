@@ -14,8 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      clubs: {
+        Row: {
+          club_email: string | null
+          created_at: string
+          description: string | null
+          id: string
+          logo: string | null
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          club_email?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo?: string | null
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          club_email?: string | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          logo?: string | null
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      event_attendees: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
+          category: Database["public"]["Enums"]["event_category"] | null
           club_name: string | null
           created_at: string
           created_by: string
@@ -23,14 +86,18 @@ export type Database = {
           end_time: string
           event_type: Database["public"]["Enums"]["event_type"]
           id: string
+          ignore_cap: boolean
           is_mandatory: boolean
           is_open_invite: boolean
           location: string | null
+          max_cap: number | null
           start_time: string
+          sub_tags: string[] | null
           title: string
           updated_at: string
         }
         Insert: {
+          category?: Database["public"]["Enums"]["event_category"] | null
           club_name?: string | null
           created_at?: string
           created_by: string
@@ -38,14 +105,18 @@ export type Database = {
           end_time: string
           event_type?: Database["public"]["Enums"]["event_type"]
           id?: string
+          ignore_cap?: boolean
           is_mandatory?: boolean
           is_open_invite?: boolean
           location?: string | null
+          max_cap?: number | null
           start_time: string
+          sub_tags?: string[] | null
           title: string
           updated_at?: string
         }
         Update: {
+          category?: Database["public"]["Enums"]["event_category"] | null
           club_name?: string | null
           created_at?: string
           created_by?: string
@@ -53,76 +124,103 @@ export type Database = {
           end_time?: string
           event_type?: Database["public"]["Enums"]["event_type"]
           id?: string
+          ignore_cap?: boolean
           is_mandatory?: boolean
           is_open_invite?: boolean
           location?: string | null
+          max_cap?: number | null
           start_time?: string
+          sub_tags?: string[] | null
           title?: string
           updated_at?: string
         }
         Relationships: []
       }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          club_name: string | null
-          created_at: string
-          email: string | null
-          full_name: string | null
-          id: string
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          avatar_url?: string | null
-          club_name?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          avatar_url?: string | null
-          club_name?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      saved_events: {
+      notifications: {
         Row: {
           created_at: string
-          event_id: string
+          delivered_time: string | null
+          event_id: string | null
           id: string
+          notification_type: string
+          scheduled_time: string | null
           user_id: string
         }
         Insert: {
           created_at?: string
-          event_id: string
+          delivered_time?: string | null
+          event_id?: string | null
           id?: string
+          notification_type: string
+          scheduled_time?: string | null
           user_id: string
         }
         Update: {
           created_at?: string
-          event_id?: string
+          delivered_time?: string | null
+          event_id?: string | null
           id?: string
+          notification_type?: string
+          scheduled_time?: string | null
           user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "saved_events_event_id_fkey"
+            foreignKeyName: "notifications_event_id_fkey"
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
             referencedColumns: ["id"]
           },
         ]
+      }
+      profiles: {
+        Row: {
+          activity_preferences: string[] | null
+          age: number | null
+          avatar_url: string | null
+          club_name: string | null
+          created_at: string
+          email: string | null
+          full_name: string | null
+          gender: string | null
+          id: string
+          interest_tags: string[] | null
+          updated_at: string
+          user_id: string
+          work_experience: string | null
+        }
+        Insert: {
+          activity_preferences?: string[] | null
+          age?: number | null
+          avatar_url?: string | null
+          club_name?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          interest_tags?: string[] | null
+          updated_at?: string
+          user_id: string
+          work_experience?: string | null
+        }
+        Update: {
+          activity_preferences?: string[] | null
+          age?: number | null
+          avatar_url?: string | null
+          club_name?: string | null
+          created_at?: string
+          email?: string | null
+          full_name?: string | null
+          gender?: string | null
+          id?: string
+          interest_tags?: string[] | null
+          updated_at?: string
+          user_id?: string
+          work_experience?: string | null
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -157,7 +255,8 @@ export type Database = {
     }
     Enums: {
       app_role: "student" | "club" | "admin"
-      event_type: "admin" | "club" | "student" | "private"
+      event_category: "academic" | "sports" | "cultural" | "social" | "other"
+      event_type: "mandatory" | "club" | "open_invite" | "private"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -286,7 +385,8 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["student", "club", "admin"],
-      event_type: ["admin", "club", "student", "private"],
+      event_category: ["academic", "sports", "cultural", "social", "other"],
+      event_type: ["mandatory", "club", "open_invite", "private"],
     },
   },
 } as const
