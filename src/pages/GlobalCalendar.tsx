@@ -2,6 +2,8 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalEvents, useSavedEventIds, useToggleSave } from "@/hooks/useEvents";
 import EventCard from "@/components/EventCard";
+import EventCardSkeleton from "@/components/EventCardSkeleton";
+import EmptyState from "@/components/EmptyState";
 import {
   format, startOfMonth, endOfMonth, eachDayOfInterval,
   isSameDay, isToday, isWithinInterval,
@@ -113,9 +115,9 @@ export default function GlobalCalendar() {
   return (
     <div className="pb-safe">
       {/* Header */}
-      <header className="sticky top-0 z-40 border-b border-border bg-card/80 backdrop-blur-lg">
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-card/80 backdrop-blur-xl">
         <div className="flex items-center justify-between px-4 py-3">
-          <h1 className="text-lg font-bold">Discover</h1>
+          <h1 className="text-lg font-bold font-display">Discover</h1>
           <div className="flex items-center gap-1">
             <button
               onClick={() => { setView("calendar"); setSelectedDate(null); }}
@@ -328,14 +330,14 @@ export default function GlobalCalendar() {
 
         {/* Events List */}
         {isLoading ? (
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-children">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-28 animate-pulse rounded-lg bg-secondary" />
+              <EventCardSkeleton key={i} />
             ))}
           </div>
         ) : displayEvents.length ? (
-          <div className="space-y-3">
-            {(selectedDate ? displayEvents : displayEvents).map((event) => (
+          <div className="space-y-3 stagger-children">
+            {displayEvents.map((event) => (
               <EventCard
                 key={event.id}
                 {...event}
@@ -345,19 +347,12 @@ export default function GlobalCalendar() {
             ))}
           </div>
         ) : (
-          <div className="rounded-lg border border-dashed border-border py-12 text-center">
-            <p className="text-sm text-muted-foreground">
-              {search || activeFilterCount ? "No events match your filters" : "No events yet"}
-            </p>
-            {(search || activeFilterCount > 0) && (
-              <button
-                onClick={() => { clearFilters(); setSearch(""); }}
-                className="mt-2 text-xs font-medium text-muted-foreground underline-offset-4 hover:underline"
-              >
-                Clear filters
-              </button>
-            )}
-          </div>
+          <EmptyState
+            icon={Search}
+            title={search || activeFilterCount ? "No matching events" : "No events yet"}
+            description={search || activeFilterCount ? "Try adjusting your filters or search terms." : "Check back later for new events."}
+            action={search || activeFilterCount ? { label: "Clear Filters", onClick: () => { clearFilters(); setSearch(""); } } : undefined}
+          />
         )}
       </div>
     </div>

@@ -115,7 +115,7 @@ export default function EventDetail() {
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
-        <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent" />
+        <div className="h-7 w-7 animate-spin rounded-full border-2 border-primary border-t-transparent" />
       </div>
     );
   }
@@ -135,7 +135,7 @@ export default function EventDetail() {
   return (
     <div className="min-h-screen pb-safe">
       {/* Top bar */}
-      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border bg-card/80 px-4 py-3 backdrop-blur-lg">
+      <header className="sticky top-0 z-40 flex items-center justify-between border-b border-border/60 bg-card/80 px-4 py-3 backdrop-blur-xl">
         <button onClick={() => navigate(-1)} className="rounded-lg p-1.5 hover:bg-secondary">
           <ArrowLeft className="h-5 w-5" />
         </button>
@@ -173,7 +173,7 @@ export default function EventDetail() {
             </span>
           )}
         </div>
-        <h1 className="text-2xl font-bold leading-tight">{event.title}</h1>
+        <h1 className="text-2xl font-bold font-display leading-tight">{event.title}</h1>
         {event.club_name && (
           <p className="mt-1 flex items-center gap-1.5 text-sm text-muted-foreground">
             <Users className="h-4 w-4" />
@@ -185,7 +185,7 @@ export default function EventDetail() {
       <main className="mx-auto max-w-lg space-y-5 px-4 py-5">
         {/* Details grid */}
         <div className="grid grid-cols-1 gap-3">
-          <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3">
+          <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card p-3.5 shadow-card">
             <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
             <div>
               <p className="text-sm font-medium">
@@ -203,7 +203,7 @@ export default function EventDetail() {
           </div>
 
           {event.location && (
-            <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3">
+            <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card p-3.5 shadow-card">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">{event.location}</p>
@@ -211,7 +211,7 @@ export default function EventDetail() {
             </div>
           )}
 
-          <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3">
+          <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card p-3.5 shadow-card">
             <Users className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
             <div>
               <p className="text-sm font-medium">{attendeeCount ?? 0} attending</p>
@@ -259,7 +259,7 @@ export default function EventDetail() {
         {/* RSVP Button */}
         {event.event_type !== "private" && !isPast && (
           <div className="sticky bottom-20 pt-2">
-            <Button onClick={handleRSVP} className="w-full" size="lg">
+            <Button onClick={handleRSVP} className="w-full rounded-xl shadow-sm" size="lg">
               RSVP — I'm Attending
             </Button>
           </div>

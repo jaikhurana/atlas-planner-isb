@@ -1,7 +1,12 @@
 import { usePersonalEvents, useSavedEventIds, useToggleSave } from "@/hooks/useEvents";
 import EventCard from "@/components/EventCard";
+import EventCardSkeleton from "@/components/EventCardSkeleton";
+import EmptyState from "@/components/EmptyState";
+import { CalendarDays, Bookmark, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 export default function PersonalCalendar() {
+  const navigate = useNavigate();
   const { data: events, isLoading } = usePersonalEvents();
   const { data: savedIds } = useSavedEventIds();
   const toggleSave = useToggleSave();
@@ -16,25 +21,25 @@ export default function PersonalCalendar() {
 
   return (
     <div className="pb-safe">
-      <header className="sticky top-0 z-40 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-lg">
-        <h1 className="text-lg font-bold">My Calendar</h1>
+      <header className="sticky top-0 z-40 border-b border-border/60 bg-card/80 px-4 py-3 backdrop-blur-xl">
+        <h1 className="text-lg font-bold font-display">My Calendar</h1>
       </header>
 
       <main className="mx-auto max-w-lg space-y-6 px-4 py-5">
         {isLoading ? (
-          <div className="space-y-3">
+          <div className="space-y-3 stagger-children">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-28 animate-pulse rounded-lg bg-secondary" />
+              <EventCardSkeleton key={i} />
             ))}
           </div>
         ) : (
           <>
             {mandatory.length > 0 && (
-              <section>
-                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              <section className="animate-fade-in">
+                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                   Mandatory
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-3 stagger-children">
                   {mandatory.map((e) => (
                     <EventCard key={e.id} {...e} isSaved={savedIds?.has(e.id)} onToggleSave={handleToggleSave} />
                   ))}
@@ -43,11 +48,11 @@ export default function PersonalCalendar() {
             )}
 
             {saved.length > 0 && (
-              <section>
-                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              <section className="animate-fade-in">
+                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                   Saved Events
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-3 stagger-children">
                   {saved.map((e) => (
                     <EventCard key={e.id} {...e} isSaved={savedIds?.has(e.id)} onToggleSave={handleToggleSave} />
                   ))}
@@ -56,11 +61,11 @@ export default function PersonalCalendar() {
             )}
 
             {privateEvents.length > 0 && (
-              <section>
-                <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-muted-foreground">
+              <section className="animate-fade-in">
+                <h2 className="mb-3 text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">
                   Private
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-3 stagger-children">
                   {privateEvents.map((e) => (
                     <EventCard key={e.id} {...e} />
                   ))}
@@ -69,10 +74,12 @@ export default function PersonalCalendar() {
             )}
 
             {!events?.length && (
-              <div className="rounded-lg border border-dashed border-border py-12 text-center">
-                <p className="text-sm text-muted-foreground">Your calendar is empty</p>
-                <p className="mt-1 text-xs text-muted-foreground">Save events or create private ones</p>
-              </div>
+              <EmptyState
+                icon={CalendarDays}
+                title="Your calendar is empty"
+                description="Save events from the global calendar or create private ones to see them here."
+                action={{ label: "Browse Events", onClick: () => navigate("/global") }}
+              />
             )}
           </>
         )}

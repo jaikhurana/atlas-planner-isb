@@ -1,7 +1,6 @@
 import { MapPin, Clock, Bookmark, BookmarkCheck, Users } from "lucide-react";
 import { format } from "date-fns";
 import { useNavigate } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 
 interface EventCardProps {
   id: string;
@@ -42,10 +41,10 @@ const typeLabels: Record<string, string> = {
 };
 
 const categoryStyles: Record<string, string> = {
-  academic: "bg-amber-100 text-amber-700 border-amber-200",
-  sports: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  cultural: "bg-violet-100 text-violet-700 border-violet-200",
-  social: "bg-pink-100 text-pink-700 border-pink-200",
+  academic: "bg-amber-50 text-amber-700 border-amber-200/60",
+  sports: "bg-emerald-50 text-emerald-700 border-emerald-200/60",
+  cultural: "bg-violet-50 text-violet-700 border-violet-200/60",
+  social: "bg-pink-50 text-pink-700 border-pink-200/60",
   other: "bg-secondary text-muted-foreground border-border",
 };
 
@@ -65,14 +64,10 @@ export default function EventCard({
 }: EventCardProps) {
   const navigate = useNavigate();
 
-  const handleClick = () => {
-    navigate(`/event/${id}`);
-  };
-
   return (
     <div
-      onClick={handleClick}
-      className="animate-fade-in cursor-pointer rounded-lg border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md active:shadow-sm"
+      onClick={() => navigate(`/event/${id}`)}
+      className="group cursor-pointer rounded-2xl border border-border/60 bg-card p-4 shadow-card transition-all duration-200 hover:shadow-card-hover hover:-translate-y-0.5 active:scale-[0.99] active:shadow-card"
     >
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1 min-w-0">
@@ -93,7 +88,9 @@ export default function EventCard({
             )}
           </div>
 
-          <h3 className="font-semibold leading-tight text-card-foreground">{title}</h3>
+          <h3 className="font-semibold leading-tight text-card-foreground group-hover:text-foreground transition-colors">
+            {title}
+          </h3>
 
           {club_name && (
             <p className="mt-0.5 flex items-center gap-1 text-xs text-muted-foreground">
@@ -103,7 +100,7 @@ export default function EventCard({
           )}
 
           {!compact && description && (
-            <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2">{description}</p>
+            <p className="mt-1.5 text-sm text-muted-foreground line-clamp-2 leading-relaxed">{description}</p>
           )}
 
           <div className="mt-2.5 flex flex-wrap items-center gap-3 text-xs text-muted-foreground">
@@ -126,7 +123,7 @@ export default function EventCard({
               e.stopPropagation();
               onToggleSave(id);
             }}
-            className="mt-1 shrink-0 rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary"
+            className="mt-1 shrink-0 rounded-full p-2 text-muted-foreground transition-all hover:bg-secondary hover:scale-110 active:scale-95"
           >
             {isSaved ? (
               <BookmarkCheck className="h-5 w-5 text-foreground" />
