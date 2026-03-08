@@ -35,10 +35,11 @@ const dotColor: Record<string, string> = {
 };
 
 export default function GlobalCalendar() {
+  const [searchParams] = useSearchParams();
   const [view, setView] = useState<ViewMode>("calendar");
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("interest") ?? "");
   const [filterCategory, setFilterCategory] = useState<string[]>([]);
   const [filterEventType, setFilterEventType] = useState<string[]>([]);
   const [filterDateFrom, setFilterDateFrom] = useState("");
