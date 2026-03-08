@@ -255,6 +255,32 @@ export default function GlobalCalendar() {
                   </div>
                 </div>
 
+                {/* My Interests */}
+                {myTags.length > 0 && (
+                  <div>
+                    <button
+                      onClick={() => setFilterMyInterests(!filterMyInterests)}
+                      className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
+                        filterMyInterests
+                          ? "border-primary bg-primary/10 text-primary"
+                          : "border-border bg-card text-foreground hover:bg-secondary"
+                      }`}
+                    >
+                      <span>✨ Only my interests</span>
+                      {filterMyInterests && <span className="text-xs">On</span>}
+                    </button>
+                    {filterMyInterests && (
+                      <div className="mt-2 flex flex-wrap gap-1">
+                        {myTags.map((t) => (
+                          <span key={t} className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium capitalize text-primary">
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+
                 <div className="flex gap-3 pt-2">
                   <Button variant="outline" className="flex-1" onClick={clearFilters}>
                     Clear All
