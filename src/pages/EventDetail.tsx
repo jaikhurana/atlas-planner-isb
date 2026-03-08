@@ -203,7 +203,7 @@ export default function EventDetail() {
           </div>
 
           {event.location && (
-            <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3">
+            <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card p-3.5 shadow-card">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
               <div>
                 <p className="text-sm font-medium">{event.location}</p>
