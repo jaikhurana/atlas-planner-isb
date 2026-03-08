@@ -66,14 +66,14 @@ export default function GlobalCalendar() {
   };
 
   const activeFilterCount =
-    filterCategory.length + filterEventType.length + (filterDateFrom ? 1 : 0) + (filterDateTo ? 1 : 0) + (filterMyInterests ? 1 : 0);
+    filterCategory.length + filterEventType.length + (filterDateFrom ? 1 : 0) + (filterDateTo ? 1 : 0) + filterInterests.length;
 
   const clearFilters = () => {
     setFilterCategory([]);
     setFilterEventType([]);
     setFilterDateFrom("");
     setFilterDateTo("");
-    setFilterMyInterests(false);
+    setFilterInterests([]);
   };
 
   // Filtered events
