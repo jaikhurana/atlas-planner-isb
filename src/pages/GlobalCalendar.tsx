@@ -46,7 +46,7 @@ export default function GlobalCalendar() {
   const [filterEventType, setFilterEventType] = useState<string[]>([]);
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
-  const [filterMyInterests, setFilterMyInterests] = useState(false);
+  const [filterInterests, setFilterInterests] = useState<string[]>([]);
   const [sheetOpen, setSheetOpen] = useState(false);
 
   const myTags = useMemo(() => {
@@ -66,14 +66,14 @@ export default function GlobalCalendar() {
   };
 
   const activeFilterCount =
-    filterCategory.length + filterEventType.length + (filterDateFrom ? 1 : 0) + (filterDateTo ? 1 : 0) + (filterMyInterests ? 1 : 0);
+    filterCategory.length + filterEventType.length + (filterDateFrom ? 1 : 0) + (filterDateTo ? 1 : 0) + filterInterests.length;
 
   const clearFilters = () => {
     setFilterCategory([]);
     setFilterEventType([]);
     setFilterDateFrom("");
     setFilterDateTo("");
-    setFilterMyInterests(false);
+    setFilterInterests([]);
   };
 
   // Filtered events
@@ -104,16 +104,16 @@ export default function GlobalCalendar() {
         to.setHours(23, 59, 59);
         if (new Date(e.start_time) > to) return false;
       }
-      // My interests
-      if (filterMyInterests && myTags.length > 0) {
+      // Interest tags
+      if (filterInterests.length > 0) {
         const eventTags = (e.sub_tags ?? []).map((t: string) => t.toLowerCase());
-        const categoryMatch = myTags.includes(e.category?.toLowerCase() ?? "");
-        const tagMatch = eventTags.some((t: string) => myTags.includes(t));
+        const categoryMatch = filterInterests.includes(e.category?.toLowerCase() ?? "");
+        const tagMatch = eventTags.some((t: string) => filterInterests.includes(t));
         if (!categoryMatch && !tagMatch) return false;
       }
       return true;
     });
-  }, [events, search, filterCategory, filterEventType, filterDateFrom, filterDateTo, filterMyInterests, myTags]);
+  }, [events, search, filterCategory, filterEventType, filterDateFrom, filterDateTo, filterInterests]);
 
   // Calendar view helpers
   const monthStart = startOfMonth(currentMonth);
@@ -258,26 +258,22 @@ export default function GlobalCalendar() {
                 {/* My Interests */}
                 {myTags.length > 0 && (
                   <div>
-                    <button
-                      onClick={() => setFilterMyInterests(!filterMyInterests)}
-                      className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
-                        filterMyInterests
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border bg-card text-foreground hover:bg-secondary"
-                      }`}
-                    >
-                      <span>✨ Only my interests</span>
-                      {filterMyInterests && <span className="text-xs">On</span>}
-                    </button>
-                    {filterMyInterests && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {myTags.map((t) => (
-                          <span key={t} className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium capitalize text-primary">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                    <h4 className="mb-2 text-sm font-medium text-muted-foreground">Your Interests</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {myTags.map((t) => (
+                        <button
+                          key={t}
+                          onClick={() => setFilterInterests((p) => toggleArrayFilter(p, t))}
+                          className={`rounded-full border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+                            filterInterests.includes(t)
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-card text-foreground hover:bg-secondary"
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
 
