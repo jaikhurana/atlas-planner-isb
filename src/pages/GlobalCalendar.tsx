@@ -2,6 +2,8 @@ import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { useGlobalEvents, useSavedEventIds, useToggleSave } from "@/hooks/useEvents";
 import EventCard from "@/components/EventCard";
+import EventCardSkeleton from "@/components/EventCardSkeleton";
+import EmptyState from "@/components/EmptyState";
 import {
   format, startOfMonth, endOfMonth, eachDayOfInterval,
   isSameDay, isToday, isWithinInterval,
