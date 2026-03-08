@@ -86,6 +86,9 @@ export default function Index() {
           />
         )}
 
+        {/* Interests */}
+        <InterestCarousel />
+
         {/* Week View */}
         <section>
           <h2 className="mb-3 text-[11px] font-bold uppercase tracking-widest text-muted-foreground">
