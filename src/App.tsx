@@ -43,7 +43,21 @@ function AppRoutes() {
     );
   }
 
-  if (profile && !profile.onboarding_completed) {
+  // Wait for profile to load before deciding routes
+  if (!profile) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-background">
+        <div className="flex flex-col items-center gap-3">
+          <div className="h-10 w-10 animate-bounce-gentle rounded-2xl bg-primary flex items-center justify-center">
+            <span className="text-lg">🌍</span>
+          </div>
+          <p className="text-sm font-medium text-muted-foreground animate-pulse-soft">Loading...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profile.onboarding_completed) {
     return (
       <Routes>
         <Route path="/onboarding" element={<Onboarding />} />
