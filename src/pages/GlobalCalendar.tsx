@@ -75,6 +75,7 @@ export default function GlobalCalendar() {
           e.title.toLowerCase().includes(q) ||
           (e.description?.toLowerCase().includes(q) ?? false) ||
           (e.club_name?.toLowerCase().includes(q) ?? false) ||
+          (e.category?.toLowerCase().includes(q) ?? false) ||
           (e.sub_tags?.some((t: string) => t.toLowerCase().includes(q)) ?? false);
         if (!match) return false;
       }
