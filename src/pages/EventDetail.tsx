@@ -185,7 +185,7 @@ export default function EventDetail() {
       <main className="mx-auto max-w-lg space-y-5 px-4 py-5">
         {/* Details grid */}
         <div className="grid grid-cols-1 gap-3">
-          <div className="flex items-start gap-3 rounded-lg border border-border bg-card p-3">
+          <div className="flex items-start gap-3 rounded-2xl border border-border/60 bg-card p-3.5 shadow-card">
             <CalendarDays className="mt-0.5 h-5 w-5 shrink-0 text-muted-foreground" />
             <div>
               <p className="text-sm font-medium">
