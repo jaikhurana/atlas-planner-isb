@@ -258,26 +258,22 @@ export default function GlobalCalendar() {
                 {/* My Interests */}
                 {myTags.length > 0 && (
                   <div>
-                    <button
-                      onClick={() => setFilterMyInterests(!filterMyInterests)}
-                      className={`flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-medium transition-colors ${
-                        filterMyInterests
-                          ? "border-primary bg-primary/10 text-primary"
-                          : "border-border bg-card text-foreground hover:bg-secondary"
-                      }`}
-                    >
-                      <span>✨ Only my interests</span>
-                      {filterMyInterests && <span className="text-xs">On</span>}
-                    </button>
-                    {filterMyInterests && (
-                      <div className="mt-2 flex flex-wrap gap-1">
-                        {myTags.map((t) => (
-                          <span key={t} className="rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium capitalize text-primary">
-                            {t}
-                          </span>
-                        ))}
-                      </div>
-                    )}
+                    <h4 className="mb-2 text-sm font-medium text-muted-foreground">Your Interests</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {myTags.map((t) => (
+                        <button
+                          key={t}
+                          onClick={() => setFilterInterests((p) => toggleArrayFilter(p, t))}
+                          className={`rounded-full border px-3 py-1.5 text-xs font-medium capitalize transition-colors ${
+                            filterInterests.includes(t)
+                              ? "border-primary bg-primary text-primary-foreground"
+                              : "border-border bg-card text-foreground hover:bg-secondary"
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                 )}
 
