@@ -10,6 +10,7 @@ import GlobalCalendar from "./pages/GlobalCalendar";
 import PersonalCalendar from "./pages/PersonalCalendar";
 import CreateEvent from "./pages/CreateEvent";
 import Profile from "./pages/Profile";
+import EventDetail from "./pages/EventDetail";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
 
@@ -43,6 +44,7 @@ function AppRoutes() {
         <Route path="/personal" element={<PersonalCalendar />} />
         <Route path="/create" element={<CreateEvent />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/event/:id" element={<EventDetail />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <BottomNav />
