@@ -104,9 +104,16 @@ export default function GlobalCalendar() {
         to.setHours(23, 59, 59);
         if (new Date(e.start_time) > to) return false;
       }
+      // My interests
+      if (filterMyInterests && myTags.length > 0) {
+        const eventTags = (e.sub_tags ?? []).map((t: string) => t.toLowerCase());
+        const categoryMatch = myTags.includes(e.category?.toLowerCase() ?? "");
+        const tagMatch = eventTags.some((t: string) => myTags.includes(t));
+        if (!categoryMatch && !tagMatch) return false;
+      }
       return true;
     });
-  }, [events, search, filterCategory, filterEventType, filterDateFrom, filterDateTo]);
+  }, [events, search, filterCategory, filterEventType, filterDateFrom, filterDateTo, filterMyInterests, myTags]);
 
   // Calendar view helpers
   const monthStart = startOfMonth(currentMonth);
