@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import {
   startOfWeek, endOfWeek, eachDayOfInterval, isSameDay, format, isToday,
-  addHours, differenceInMinutes,
 } from "date-fns";
 
 type CalEvent = {
@@ -29,18 +28,15 @@ export default function WeekStrip({ events = [] }: { events: CalEvent[] }) {
     const map = new Map<string, CalEvent[]>();
     days.forEach((d) => {
       const key = format(d, "yyyy-MM-dd");
-      map.set(
-        key,
-        events.filter((e) => isSameDay(new Date(e.start_time), d))
-      );
+      map.set(key, events.filter((e) => isSameDay(new Date(e.start_time), d)));
     });
     return map;
   }, [events, days]);
 
   return (
-    <div className="rounded-xl border border-border bg-card p-3">
-      <div className="mb-2 flex items-center justify-between">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+    <div className="animate-fade-in rounded-2xl border border-border/60 bg-card p-4 shadow-card">
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
           This Week
         </h3>
         <span className="text-xs text-muted-foreground">
@@ -51,17 +47,17 @@ export default function WeekStrip({ events = [] }: { events: CalEvent[] }) {
         {days.map((day) => {
           const key = format(day, "yyyy-MM-dd");
           const dayEvents = eventsByDay.get(key) ?? [];
-          const today_ = isToday(day);
+          const isCurrentDay = isToday(day);
           return (
-            <div key={key} className="flex flex-col items-center gap-1">
+            <div key={key} className="flex flex-col items-center gap-1.5">
               <span className="text-[10px] font-medium text-muted-foreground">
                 {format(day, "EEE")}
               </span>
               <span
-                className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-semibold transition-colors ${
-                  today_
-                    ? "bg-primary text-primary-foreground"
-                    : "text-foreground"
+                className={`flex h-9 w-9 items-center justify-center rounded-xl text-sm font-semibold transition-all ${
+                  isCurrentDay
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-foreground hover:bg-secondary"
                 }`}
               >
                 {format(day, "d")}
@@ -70,7 +66,7 @@ export default function WeekStrip({ events = [] }: { events: CalEvent[] }) {
                 {dayEvents.slice(0, 3).map((e) => (
                   <span
                     key={e.id}
-                    className={`h-1.5 w-1.5 rounded-full ${colorMap[e.event_type]}`}
+                    className={`h-1.5 w-1.5 rounded-full ${colorMap[e.event_type]} transition-transform`}
                   />
                 ))}
                 {dayEvents.length === 0 && (
@@ -88,11 +84,11 @@ export default function WeekStrip({ events = [] }: { events: CalEvent[] }) {
         const todayEvents = eventsByDay.get(todayKey) ?? [];
         if (todayEvents.length === 0) return null;
         return (
-          <div className="mt-3 space-y-1.5 border-t border-border pt-3">
+          <div className="mt-3 space-y-1.5 border-t border-border/60 pt-3">
             {todayEvents.map((e) => (
               <div
                 key={e.id}
-                className="flex items-center gap-2 rounded-md px-2 py-1.5"
+                className="flex items-center gap-2.5 rounded-xl px-2.5 py-2 transition-colors hover:bg-secondary/60"
               >
                 <span className={`h-2 w-2 shrink-0 rounded-full ${colorMap[e.event_type]}`} />
                 <span className="flex-1 truncate text-xs font-medium text-foreground">
