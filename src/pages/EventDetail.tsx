@@ -222,6 +222,11 @@ export default function EventDetail() {
               )}
             </div>
           </div>
+
+          {/* Reminder Settings */}
+          {isSaved && event.event_type !== "private" && isUpcoming && (
+            <ReminderSettings eventId={event.id} />
+          )}
         </div>
 
         {/* Tags */}
