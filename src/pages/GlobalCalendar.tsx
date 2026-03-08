@@ -36,6 +36,7 @@ const dotColor: Record<string, string> = {
 };
 
 export default function GlobalCalendar() {
+  const { profile } = useAuth();
   const [searchParams] = useSearchParams();
   const [view, setView] = useState<ViewMode>("calendar");
   const [currentMonth, setCurrentMonth] = useState(new Date());
@@ -45,7 +46,16 @@ export default function GlobalCalendar() {
   const [filterEventType, setFilterEventType] = useState<string[]>([]);
   const [filterDateFrom, setFilterDateFrom] = useState("");
   const [filterDateTo, setFilterDateTo] = useState("");
+  const [filterMyInterests, setFilterMyInterests] = useState(false);
   const [sheetOpen, setSheetOpen] = useState(false);
+
+  const myTags = useMemo(() => {
+    const tags = [
+      ...(profile?.interest_tags ?? []),
+      ...(profile?.activity_preferences ?? []),
+    ];
+    return [...new Set(tags.map((t) => t.toLowerCase()))];
+  }, [profile]);
 
   const { data: events, isLoading } = useGlobalEvents();
   const { data: savedIds } = useSavedEventIds();
