@@ -1,4 +1,5 @@
 import { useState } from "react";
+import atlasLogo from "@/assets/atlas-logo.png";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,11 +54,11 @@ export default function Auth() {
 
       <div className="relative w-full max-w-sm animate-fade-in">
         <div className="mb-10 text-center">
-          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl bg-primary shadow-glow">
-            <span className="text-2xl">🌍</span>
+          <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-3xl shadow-glow overflow-hidden">
+            <img src={atlasLogo} alt="Atlas logo" className="h-16 w-16 object-contain" />
           </div>
           <h1 className="text-3xl font-extrabold font-display tracking-tight text-foreground">Atlas</h1>
-          <p className="mt-2 text-sm font-medium text-muted-foreground">Your campus, connected ✨</p>
+          <p className="mt-2 text-sm font-medium text-muted-foreground">Carries the weight of your MBA, so you don't have to.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
