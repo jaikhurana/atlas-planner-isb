@@ -189,6 +189,7 @@ export type Database = {
           gender: string | null
           id: string
           interest_tags: string[] | null
+          onboarding_completed: boolean
           updated_at: string
           user_id: string
           work_experience: string | null
@@ -204,6 +205,7 @@ export type Database = {
           gender?: string | null
           id?: string
           interest_tags?: string[] | null
+          onboarding_completed?: boolean
           updated_at?: string
           user_id: string
           work_experience?: string | null
@@ -219,6 +221,7 @@ export type Database = {
           gender?: string | null
           id?: string
           interest_tags?: string[] | null
+          onboarding_completed?: boolean
           updated_at?: string
           user_id?: string
           work_experience?: string | null
