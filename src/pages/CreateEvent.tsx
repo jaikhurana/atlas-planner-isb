@@ -132,9 +132,9 @@ export default function CreateEvent() {
 
   return (
     <div className="pb-safe">
-      <header className="sticky top-0 z-40 border-b border-border bg-card/80 px-4 py-3 backdrop-blur-lg">
+       <header className="sticky top-0 z-40 border-b border-border/40 bg-card/80 px-4 py-3 backdrop-blur-2xl">
         <div className="flex items-center justify-between">
-          <h1 className="text-lg font-bold">Create Event</h1>
+          <h1 className="text-lg font-extrabold font-display">Create Event</h1>
           <button
             onClick={() => navigate(-1)}
             className="text-sm font-medium text-muted-foreground"

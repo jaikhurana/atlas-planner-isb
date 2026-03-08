@@ -283,11 +283,11 @@ export default function GlobalCalendar() {
                   <button
                     key={day.toISOString()}
                     onClick={() => setSelectedDate(selected ? null : day)}
-                    className={`relative flex flex-col items-center rounded-lg py-1.5 text-sm transition-colors ${
+                    className={`relative flex flex-col items-center rounded-xl py-1.5 text-sm font-bold transition-all duration-300 ${
                       selected
-                        ? "bg-primary text-primary-foreground"
+                        ? "bg-primary text-primary-foreground shadow-glow"
                         : today
-                        ? "bg-secondary font-semibold"
+                        ? "bg-primary/10 text-primary font-extrabold"
                         : "hover:bg-secondary"
                     }`}
                   >

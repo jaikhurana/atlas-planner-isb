@@ -259,7 +259,7 @@ export default function EventDetail() {
         {/* RSVP Button */}
         {event.event_type !== "private" && !isPast && (
           <div className="sticky bottom-20 pt-2">
-            <Button onClick={handleRSVP} className="w-full rounded-xl shadow-sm" size="lg">
+            <Button onClick={handleRSVP} className="w-full rounded-2xl font-bold shadow-glow" size="lg">
               RSVP — I'm Attending
             </Button>
           </div>
