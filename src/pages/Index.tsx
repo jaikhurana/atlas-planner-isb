@@ -5,6 +5,7 @@ import EventCardSkeleton from "@/components/EventCardSkeleton";
 import NextEventBanner from "@/components/NextEventBanner";
 import WeekStrip from "@/components/WeekStrip";
 import InterestCarousel from "@/components/InterestCarousel";
+import WeeklyDigest from "@/components/WeeklyDigest";
 import EmptyState from "@/components/EmptyState";
 import { NotificationBell } from "@/components/NotificationPanel";
 import FeatureTour from "@/components/FeatureTour";
@@ -85,6 +86,9 @@ export default function Index() {
             action={{ label: "Explore Events", onClick: () => navigate("/global") }}
           />
         )}
+
+        {/* Weekly AI Digest */}
+        <WeeklyDigest />
 
         {/* Interests */}
         <InterestCarousel />
