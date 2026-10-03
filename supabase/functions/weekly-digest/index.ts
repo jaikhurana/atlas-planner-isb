@@ -43,7 +43,7 @@ Deno.serve(async (req) => {
     const { data: { user }, error: authError } = await supabase.auth.getUser();
     if (authError || !user) return json({ error: "Please sign in to get your digest." }, 401);
 
-    // Current week start (Monday)
+    // Cache key: Monday of the current week
     const now = new Date();
     const day = now.getDay();
     const diff = day === 0 ? -6 : 1 - day;
@@ -51,8 +51,9 @@ Deno.serve(async (req) => {
     weekStart.setDate(now.getDate() + diff);
     weekStart.setHours(0, 0, 0, 0);
     const weekStartStr = weekStart.toISOString().slice(0, 10);
-    const weekEnd = new Date(weekStart);
-    weekEnd.setDate(weekStart.getDate() + 7);
+    // Digest covers the next 7 days starting now
+    const windowEnd = new Date(now);
+    windowEnd.setDate(now.getDate() + 7);
 
     // Check cache (service role to bypass RLS for cache read/write)
     const admin = createClient(
@@ -83,8 +84,8 @@ Deno.serve(async (req) => {
       .from("events")
       .select("title, description, location, start_time, end_time, category, sub_tags, club_name, event_type")
       .neq("event_type", "private")
-      .gte("start_time", weekStart.toISOString())
-      .lt("start_time", weekEnd.toISOString())
+      .gte("start_time", now.toISOString())
+      .lt("start_time", windowEnd.toISOString())
       .order("start_time", { ascending: true });
 
     if (!events || events.length === 0) {
