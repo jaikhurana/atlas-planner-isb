@@ -1,73 +1,81 @@
-# Welcome to your Lovable project
+# Atlas Events
 
-## Project info
+You are a senior product engineer building a production-quality MVP quickly.
+Focus on simple architecture and working features.
+Use Supabase for backend and React for frontend.
+Optimize for speed of development.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
 
-## How can I edit this code?
+Build a mobile-first web application called **Atlas**.
 
-There are several ways of editing your application.
+Atlas is a campus event platform designed for MBA students at ISB.
 
-**Use Lovable**
+Goal:
+Create a unified calendar where students can discover, track, and organize campus events from:
+• Administration
+• Clubs
+• Students themselves
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+Tech stack:
+• Frontend: React + Tailwind
+• Backend: Supabase
+• Authentication: Email login restricted to @isb.edu domain
+• Database: Supabase PostgreSQL
 
-Changes made via Lovable will be committed automatically to this repo.
+User roles:
+1. Student
+2. Club
+3. Admin
 
-**Use your preferred IDE**
+Core concept:
+Two calendar layers:
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+GLOBAL CALENDAR
+- shows all events on campus
+- admin events
+- club events
+- open invite student events
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+PERSONAL CALENDAR
+- mandatory events auto added
+- events the student saved
+- personal private events
 
-Follow these steps:
+Main navigation (bottom tab bar):
+1. Home
+2. Global Calendar
+3. Personal Calendar
+4. Create Event
+5. Profile
+
+Design:
+Minimal, modern, mobile-first.
+Use card layouts and simple icons.
+Color coding:
+Admin events → red
+Club events → blue
+Student events → green
+Private events → grey
+
+This project was built with [Lovable](https://lovable.dev).
+
+**Live app**: https://atlas-planner-isb.lovable.app
+
+## Build with Lovable
+
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/8b84c820-ffee-4c53-9b39-2c0d9c9fe90e).
+
+- **Ship faster**: describe what you want to build and Lovable handles the code.
+- **Stay in sync**: every change made in Lovable is committed straight to this repository.
+- **Full ownership**: this code is yours. Push to `main` on GitHub and your changes sync back into Lovable, ready for your next prompt.
+
+## Development
+
+Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
+git clone <this-repository-url>
+cd <repository-name>
 npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
-
-**Edit a file directly in GitHub**
-
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
